@@ -151,3 +151,9 @@ docker logs -f api_simulacao_hack_container
 docker stop api_simulacao_hack_container
 docker rm api_simulacao_hack_container
 ```
+
+### Autor
+
+Desenvolvido por: Gabriel Azevedo Sousa
+
+*   **GitHub:** https://github.com/gazevedosousa
