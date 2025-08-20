@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API_Simulacao_Hack", "API_Simulacao_Hack\API_Simulacao_Hack.csproj", "{E79948C2-C615-44AC-80B1-93131F03AA63}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API_Simulacao_Hack.Test", "API_Simulacao_Hack.Test\API_Simulacao_Hack.Test.csproj", "{18B55BB4-1A11-4B2B-8BF1-306157C4B3E3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E79948C2-C615-44AC-80B1-93131F03AA63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E79948C2-C615-44AC-80B1-93131F03AA63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E79948C2-C615-44AC-80B1-93131F03AA63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E79948C2-C615-44AC-80B1-93131F03AA63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18B55BB4-1A11-4B2B-8BF1-306157C4B3E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18B55BB4-1A11-4B2B-8BF1-306157C4B3E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18B55BB4-1A11-4B2B-8BF1-306157C4B3E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18B55BB4-1A11-4B2B-8BF1-306157C4B3E3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D8558492-4BDC-44AC-8ED9-11A92D6E474F}
+	EndGlobalSection
+EndGlobal
