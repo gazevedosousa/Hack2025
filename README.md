@@ -56,7 +56,7 @@ dotnet build API_Simulacao_Hack.csproj -c Release
 dotnet run --project API_Simulacao_Hack.csproj
 ```
 
-> A aplicação irá subir na porta **7652** por padrão.
+> A aplicação irá subir nas portas **7652** e **5652** por padrão.
 
 ### 3.4 Testes Unitários
 
