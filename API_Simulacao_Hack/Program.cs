@@ -8,6 +8,7 @@ using API_Simulacao_Hack.Validators;
 using Azure.Messaging.EventHubs.Producer;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Azure.Amqp;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,11 +38,21 @@ builder.Services.AddDbContext<DbHack>(
                   options.UseLazyLoadingProxies();
               });
 
-builder.Services.AddDbContext<SimulacaoContext>(
-              options =>
-              {
-                  options.UseSqlite("Data Source=simulacao.db");
-              });
+var diretorioDb = Path.Combine(AppContext.BaseDirectory, "Database");
+
+Directory.CreateDirectory(diretorioDb);
+
+var caminhoDb = Path.Combine(diretorioDb, "simulacao.db");
+
+if (!File.Exists(caminhoDb))
+{
+    using (var connection = new SqliteConnection($"Data Source={caminhoDb}"))
+    {
+        connection.Open();
+    }
+}
+
+builder.Services.AddSqlite<SimulacaoContext>($"Data Source={caminhoDb};Mode=ReadWriteCreate;Foreign Keys=True");
 
 // Adiciona o client do Event Hub
 builder.Services.AddSingleton(x =>
@@ -64,7 +75,11 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<SimulacaoContext>();
+    db.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -70,7 +70,7 @@ namespace API_Simulacao_Hack.Services
             if (!await _simulacaoRepository.SalvarSimulacao(simulacao))
             {
                 _logger.LogError("Erro ao salvar simulação no banco de dados");
-                return ApiResponse<RetornoSimulacaoDTO>.NotFound(retornoSimulacao, "Erro ao salvar simulação no banco de dados");
+                return ApiResponse<RetornoSimulacaoDTO>.BadRequest(retornoSimulacao, "Erro ao salvar simulação no banco de dados");
             }
 
             retornoSimulacao.IdSimulacao = simulacao.IdSimulacao;

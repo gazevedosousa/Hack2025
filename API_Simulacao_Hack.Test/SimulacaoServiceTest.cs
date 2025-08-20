@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace API_Contabil.Test
+namespace API_Simulacao_Hack.Test
 {
     public class SimulacaoServiceTest
     {

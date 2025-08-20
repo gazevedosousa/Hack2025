@@ -48,7 +48,11 @@ namespace API_Simulacao_Hack.Repositories
                     IdSimulacao = s.IdSimulacao,
                     ValorDesejado = s.ValorDesejado,
                     Prazo = s.Prazo,
-                    ValorTotalParcelas = s.ValorTotalParcelas
+                    ValorTotalParcelas = s.ValorTotalParcelas,
+                    CodigoProduto = s.CodigoProduto,
+                    DescricaoProduto = s.DescricaoProduto,
+                    DataReferencia = s.DataReferencia,
+                    TaxaJuros = s.TaxaJuros
                 })
                 .ToListAsync();
         }
