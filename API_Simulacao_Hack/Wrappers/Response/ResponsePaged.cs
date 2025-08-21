@@ -1,6 +1,3 @@
-using System.Collections;
-
-
 namespace API_Simulacao_Hack.Wrappers.Response;
 
 public class ResponsePaged<T> {

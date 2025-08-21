@@ -1,9 +1,7 @@
 ﻿using API_Simulacao_Hack.DTO;
 using API_Simulacao_Hack.Interfaces.Repositories;
 using API_Simulacao_Hack.Models;
-using API_Simulacao_Hack.Services;
 using Microsoft.EntityFrameworkCore;
-using System.Drawing;
 
 namespace API_Simulacao_Hack.Repositories
 {
@@ -63,15 +61,9 @@ namespace API_Simulacao_Hack.Repositories
 
         public async Task<int> ContaSimulacoesPorDataAsync(DateOnly dataReferencia)
         {
-            int contagemSimulacoes = await _simulacaoContext.Simulacoes
+            return await _simulacaoContext.Simulacoes
                 .CountAsync(s => s.DataReferencia == dataReferencia);
 
-            if(contagemSimulacoes > 0)
-            {
-                return contagemSimulacoes / 2;
-            }
-
-            return contagemSimulacoes;
         }
 
     }

@@ -1,6 +1,5 @@
 ﻿using API_Simulacao_Hack.DTO;
 using API_Simulacao_Hack.Interfaces.Services;
-using Azure.Messaging.EventHubs.Producer;
 
 namespace API_Simulacao_Hack.Services
 {

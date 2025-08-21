@@ -1,7 +1,5 @@
-﻿using Xunit;
-using API_Simulacao_Hack.Services;
+﻿using API_Simulacao_Hack.Services;
 using API_Simulacao_Hack.DTO;
-using System.Collections.Generic;
 
 namespace API_Simulacao_Hack.Test
 {

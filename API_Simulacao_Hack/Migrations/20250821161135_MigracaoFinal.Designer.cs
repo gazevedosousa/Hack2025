@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API_Simulacao_Hack.Migrations
 {
     [DbContext(typeof(SimulacaoContext))]
-    [Migration("20250821122927_SimulacoesSeparadas")]
-    partial class SimulacoesSeparadas
+    [Migration("20250821161135_MigracaoFinal")]
+    partial class MigracaoFinal
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -22,10 +22,10 @@ namespace API_Simulacao_Hack.Migrations
 
             modelBuilder.Entity("API_Simulacao_Hack.Models.Simulacao", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("IdSimulacao")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id");
+                        .HasColumnName("idSimulacao");
 
                     b.Property<int>("CodigoProduto")
                         .HasColumnType("int")
@@ -40,10 +40,6 @@ namespace API_Simulacao_Hack.Migrations
                         .HasColumnType("varchar(200)")
                         .HasColumnName("descricaoProduto");
 
-                    b.Property<int>("IdSimulacao")
-                        .HasColumnType("integer")
-                        .HasColumnName("idSimulacao");
-
                     b.Property<int>("Prazo")
                         .HasColumnType("int")
                         .HasColumnName("prazo");
@@ -51,10 +47,6 @@ namespace API_Simulacao_Hack.Migrations
                     b.Property<decimal>("TaxaJuros")
                         .HasColumnType("decimal(10,9)")
                         .HasColumnName("taxaJuros");
-
-                    b.Property<int>("TipoSimulacao")
-                        .HasColumnType("int")
-                        .HasColumnName("tipoSimulacao");
 
                     b.Property<decimal>("ValorDesejado")
                         .HasColumnType("decimal(18,2)")
@@ -68,7 +60,7 @@ namespace API_Simulacao_Hack.Migrations
                         .HasColumnType("decimal(18,2)")
                         .HasColumnName("valorTotalParcelas");
 
-                    b.HasKey("Id");
+                    b.HasKey("IdSimulacao");
 
                     b.ToTable("Simulacoes");
                 });

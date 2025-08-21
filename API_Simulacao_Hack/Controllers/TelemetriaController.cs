@@ -1,5 +1,4 @@
-﻿using API_Simulacao_Hack.DTO;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using API_Simulacao_Hack.Util.Base;
 using API_Simulacao_Hack.Interfaces.Services;

@@ -1,5 +1,4 @@
 ﻿using API_Simulacao_Hack.DTO;
-using API_Simulacao_Hack.Models;
 using API_Simulacao_Hack.Util.Base;
 using API_Simulacao_Hack.Wrappers.Response;
 

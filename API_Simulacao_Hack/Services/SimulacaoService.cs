@@ -9,7 +9,6 @@ using API_Simulacao_Hack.Interfaces.Repositories;
 using API_Simulacao_Hack.Wrappers.Response;
 using API_Simulacao_Hack.Validators;
 using FluentValidation.Results;
-using API_Simulacao_Hack.Enum;
 
 namespace API_Simulacao_Hack.Services
 {
@@ -52,51 +51,36 @@ namespace API_Simulacao_Hack.Services
                 return ApiResponse<RetornoSimulacaoDTO>.NotFound(retornoSimulacao, "Produto não encontrado para o valor e prazo desejados.");
             }
 
+            List<ResultadoSimulacaoDTO> lsResultadoSimulacao = _calculoService.CalculaParcelas(simulacaoDTO, produto.PcTaxaJuros);
+
             retornoSimulacao.IdSimulacao = await GeraIdSimulacao();
             retornoSimulacao.CodigoProduto = produto.CoProduto;
             retornoSimulacao.DescricaoProduto = produto.NoProduto;
             retornoSimulacao.TaxaJuros = produto.PcTaxaJuros;
-            retornoSimulacao.ResultadosSimulacao = _calculoService.CalculaParcelas(simulacaoDTO, produto.PcTaxaJuros);
+            retornoSimulacao.ResultadosSimulacao = lsResultadoSimulacao;
+           
+            decimal valorMediaPrestacoes = lsResultadoSimulacao
+                .SelectMany(r => r.Parcelas)
+                .Average(pr => pr.ValorPrestacao);
 
-            foreach(ResultadoSimulacaoDTO resultado in retornoSimulacao.ResultadosSimulacao)
+            // Salvar simulação no banco de dados
+            Simulacao simulacao = new Simulacao
             {
-                TipoSimulacaoEnum tipoSimulacao;
+                IdSimulacao = retornoSimulacao.IdSimulacao,
+                ValorDesejado = simulacaoDTO.ValorDesejado,
+                Prazo = simulacaoDTO.Prazo,
+                ValorTotalParcelas = lsResultadoSimulacao.Where(s => s.Tipo == "SAC").SelectMany(s => s.Parcelas).Sum(p => p.ValorPrestacao),
+                CodigoProduto = retornoSimulacao.CodigoProduto,
+                DescricaoProduto = retornoSimulacao.DescricaoProduto,
+                DataReferencia = DateOnly.FromDateTime(new DateTime().GetDataAtual().Date),
+                TaxaJuros = retornoSimulacao.TaxaJuros,
+                ValorMediaPrestacoes = valorMediaPrestacoes
+            };
 
-                switch (resultado.Tipo)
-                {
-                    case "PRICE":
-                        tipoSimulacao = TipoSimulacaoEnum.PRICE; // PRICE
-                        break;
-                    case "SAC":
-                        tipoSimulacao = TipoSimulacaoEnum.SAC; // SAC
-                        break;
-                    default:
-                        _logger.LogError("Tipo de simulação desconhecido: {Tipo}", resultado.Tipo);
-                        return ApiResponse<RetornoSimulacaoDTO>.BadRequest(retornoSimulacao, "Tipo de simulação desconhecido.");
-                }
-
-                decimal valorMediaPrestacoes = resultado.Parcelas.Sum(p => p.ValorPrestacao) / (resultado.Parcelas.Count == 0 ? 1 : resultado.Parcelas.Count);
-
-                // Salvar simulação no banco de dados
-                Simulacao simulacao = new Simulacao
-                {
-                    IdSimulacao = retornoSimulacao.IdSimulacao,
-                    ValorDesejado = simulacaoDTO.ValorDesejado,
-                    Prazo = simulacaoDTO.Prazo,
-                    ValorTotalParcelas = resultado.Parcelas.Sum(p => p.ValorPrestacao),
-                    CodigoProduto = retornoSimulacao.CodigoProduto,
-                    DescricaoProduto = retornoSimulacao.DescricaoProduto,
-                    DataReferencia = DateOnly.FromDateTime(new DateTime().GetDataAtual().Date),
-                    TaxaJuros = retornoSimulacao.TaxaJuros,
-                    ValorMediaPrestacoes = valorMediaPrestacoes,
-                    TipoSimulacao = (int)tipoSimulacao
-                };
-
-                if (!await _simulacaoRepository.SalvarSimulacao(simulacao))
-                {
-                    _logger.LogError("Erro ao salvar simulação no banco de dados");
-                    return ApiResponse<RetornoSimulacaoDTO>.BadRequest(retornoSimulacao, "Erro ao salvar simulação no banco de dados");
-                }
+            if (!await _simulacaoRepository.SalvarSimulacao(simulacao))
+            {
+                _logger.LogError("Erro ao salvar simulação no banco de dados");
+                return ApiResponse<RetornoSimulacaoDTO>.BadRequest(retornoSimulacao, "Erro ao salvar simulação no banco de dados");
             }
 
             await _eventHubService.EnviaEvento(new EventHubDTO()
@@ -149,7 +133,7 @@ namespace API_Simulacao_Hack.Services
                         TaxaMediaJuro = g.Sum(s => s.TaxaJuros) / g.Count(),
                         ValorTotalDesejado = Math.Round(g.Sum(s => s.ValorDesejado), 2),
                         ValorTotalCredito = Math.Round(g.Sum(s => s.ValorTotalParcelas), 2),
-                        ValorMedioPrestacao = Math.Round(g.Sum(s => s.ValorMediaPrestacoes) / 2, 2)
+                        ValorMedioPrestacao = Math.Round(g.Sum(s => s.ValorMediaPrestacoes) / g.Count(), 2)
                     })
                     .ToList();
 

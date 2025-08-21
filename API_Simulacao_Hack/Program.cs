@@ -6,8 +6,6 @@ using API_Simulacao_Hack.Repositories;
 using API_Simulacao_Hack.Services;
 using API_Simulacao_Hack.Validators;
 using Azure.Messaging.EventHubs.Producer;
-using Microsoft.ApplicationInsights.Extensibility;
-using Microsoft.Azure.Amqp;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 

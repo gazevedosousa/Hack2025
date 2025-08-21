@@ -21,14 +21,16 @@ public class TelemetriaService: ITelemetriaService
             telemetria.TempoMinimo = Math.Round(telemetria.QtdRequisicoes == 1 ? tempoExecucao : Math.Min(telemetria.TempoMinimo, tempoExecucao), 0);
             telemetria.TempoMaximo = Math.Round(Math.Max(telemetria.TempoMaximo, tempoExecucao), 0);
 
+
             if (sucesso)
             {
-                telemetria.PercentualSucesso = ((telemetria.PercentualSucesso * (telemetria.QtdRequisicoes - 1)) + 100) / telemetria.QtdRequisicoes;
+                telemetria.PercentualSucesso = Math.Round(((telemetria.PercentualSucesso * (telemetria.QtdRequisicoes - 1)) + 1) / telemetria.QtdRequisicoes, 2);
             }
             else
             {
-                telemetria.PercentualSucesso = ((telemetria.PercentualSucesso * (telemetria.QtdRequisicoes - 1)) + 0) / telemetria.QtdRequisicoes;
+                telemetria.PercentualSucesso = Math.Round(((telemetria.PercentualSucesso * (telemetria.QtdRequisicoes - 1)) + 0) / telemetria.QtdRequisicoes, 2);
             }
+
         }
     }
 
