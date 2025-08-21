@@ -15,7 +15,6 @@ namespace API_Simulacao_Hack.DTO
     {
         [JsonPropertyName("numero")]
         public int Numero { get; set; }
-
         [JsonPropertyName("valorAmortizacao")]
         public decimal ValorAmortizacao { get; set; }
         [JsonPropertyName("valorJuros")]

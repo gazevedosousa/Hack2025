@@ -17,9 +17,9 @@ public class TelemetriaService: ITelemetriaService
         lock (telemetria)
         {
             telemetria.QtdRequisicoes++;
-            telemetria.TempoMedio = ((telemetria.TempoMedio * (telemetria.QtdRequisicoes - 1)) + tempoExecucao) / telemetria.QtdRequisicoes;
-            telemetria.TempoMinimo = telemetria.QtdRequisicoes == 1 ? tempoExecucao : Math.Min(telemetria.TempoMinimo, tempoExecucao);
-            telemetria.TempoMaximo = Math.Max(telemetria.TempoMaximo, tempoExecucao);
+            telemetria.TempoMedio = Math.Round(((telemetria.TempoMedio * (telemetria.QtdRequisicoes - 1)) + tempoExecucao) / telemetria.QtdRequisicoes, 0);
+            telemetria.TempoMinimo = Math.Round(telemetria.QtdRequisicoes == 1 ? tempoExecucao : Math.Min(telemetria.TempoMinimo, tempoExecucao), 0);
+            telemetria.TempoMaximo = Math.Round(Math.Max(telemetria.TempoMaximo, tempoExecucao), 0);
 
             if (sucesso)
             {

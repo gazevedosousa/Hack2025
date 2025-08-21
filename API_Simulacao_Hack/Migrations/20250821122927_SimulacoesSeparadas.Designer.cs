@@ -3,6 +3,7 @@ using System;
 using API_Simulacao_Hack.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API_Simulacao_Hack.Migrations
 {
     [DbContext(typeof(SimulacaoContext))]
-    partial class SimulacaoContextModelSnapshot : ModelSnapshot
+    [Migration("20250821122927_SimulacoesSeparadas")]
+    partial class SimulacoesSeparadas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.8");

@@ -39,20 +39,16 @@ namespace API_Simulacao_Hack.Repositories
             return _simulacaoContext.Simulacoes;
         }
 
-        public async Task<List<Simulacao>> ListaSimulacoesPaginadas(DbSet<Simulacao> query, int pagina, int qtdRegistrosPagina)
+        public async Task<List<RetornoListaSimulacaoDTO>> ListaSimulacoesPaginadas(DbSet<Simulacao> query, int pagina, int qtdRegistrosPagina)
         {
             return await query.Skip((pagina - 1) * qtdRegistrosPagina)
                 .Take(qtdRegistrosPagina).AsNoTracking()
-                .Select(s => new Simulacao
+                .Select(s => new RetornoListaSimulacaoDTO
                 {
                     IdSimulacao = s.IdSimulacao,
-                    ValorDesejado = s.ValorDesejado,
+                    ValorDesejado = Math.Round(s.ValorDesejado, 2),
                     Prazo = s.Prazo,
-                    ValorTotalParcelas = s.ValorTotalParcelas,
-                    CodigoProduto = s.CodigoProduto,
-                    DescricaoProduto = s.DescricaoProduto,
-                    DataReferencia = s.DataReferencia,
-                    TaxaJuros = s.TaxaJuros
+                    ValorTotalParcelas = Math.Round(s.ValorTotalParcelas, 2)
                 })
                 .ToListAsync();
         }
@@ -64,5 +60,19 @@ namespace API_Simulacao_Hack.Repositories
                 .AsNoTracking()
                 .ToListAsync();
         }
+
+        public async Task<int> ContaSimulacoesPorDataAsync(DateOnly dataReferencia)
+        {
+            int contagemSimulacoes = await _simulacaoContext.Simulacoes
+                .CountAsync(s => s.DataReferencia == dataReferencia);
+
+            if(contagemSimulacoes > 0)
+            {
+                return contagemSimulacoes / 2;
+            }
+
+            return contagemSimulacoes;
+        }
+
     }
 }

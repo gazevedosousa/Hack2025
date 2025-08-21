@@ -22,6 +22,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<ISimulacaoService, SimulacaoService>();
 builder.Services.AddScoped<IEventHubService, EventHubService>();
+builder.Services.AddScoped<ICalculoService, CalculoService>();
 builder.Services.AddSingleton<ITelemetriaService, TelemetriaService>();
 
 builder.Services.AddScoped<ISimulacaoRepository, SimulacaoRepository>();

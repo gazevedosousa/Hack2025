@@ -1,11 +1,12 @@
 ﻿using API_Simulacao_Hack.DTO;
+using API_Simulacao_Hack.Interfaces.Services;
+using Azure.Messaging.EventHubs.Producer;
 
-namespace API_Simulacao_Hack.Util
+namespace API_Simulacao_Hack.Services
 {
-    public static class CalculoUtil
+    public class CalculoService: ICalculoService
     {
-
-        public static List<ResultadoSimulacaoDTO> CalculaParcelas(SolicitacaoSimulacaoDTO simulacaoDTO, decimal pcTaxaJuros)
+             public List<ResultadoSimulacaoDTO> CalculaParcelas(SolicitacaoSimulacaoDTO simulacaoDTO, decimal pcTaxaJuros)
         {
             List<ResultadoSimulacaoDTO> listaResultados = new List<ResultadoSimulacaoDTO>();
 
@@ -18,8 +19,10 @@ namespace API_Simulacao_Hack.Util
             return listaResultados;
         }
         // Método PRICE
-        private static ResultadoSimulacaoDTO CalcularParcelasPrice(SolicitacaoSimulacaoDTO simulacaoDTO, decimal pcTaxaJuros)
+        public ResultadoSimulacaoDTO CalcularParcelasPrice(SolicitacaoSimulacaoDTO simulacaoDTO, decimal pcTaxaJuros)
         {
+            simulacaoDTO.Prazo = simulacaoDTO.Prazo == 0 ? 1 : simulacaoDTO.Prazo;
+
             var parcelas = new List<ParcelasDTO>();
             var fator = (decimal)Math.Pow((double)(1 + pcTaxaJuros), simulacaoDTO.Prazo);
             var valorPrestacao = simulacaoDTO.ValorDesejado * (pcTaxaJuros * fator) / (fator - 1);
@@ -47,8 +50,10 @@ namespace API_Simulacao_Hack.Util
         }
 
         // Método SAC
-        private static ResultadoSimulacaoDTO CalcularParcelasSAC(SolicitacaoSimulacaoDTO simulacaoDTO, decimal pcTaxaJuros)
+        public ResultadoSimulacaoDTO CalcularParcelasSAC(SolicitacaoSimulacaoDTO simulacaoDTO, decimal pcTaxaJuros)
         {
+            simulacaoDTO.Prazo = simulacaoDTO.Prazo == 0 ? 1 : simulacaoDTO.Prazo;
+
             var parcelas = new List<ParcelasDTO>();
             var valorAmortizacao = simulacaoDTO.ValorDesejado / simulacaoDTO.Prazo;
             decimal saldoDevedor = simulacaoDTO.ValorDesejado;

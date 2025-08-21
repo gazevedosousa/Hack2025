@@ -3,7 +3,9 @@ using API_Simulacao_Hack.DTO.EventHub;
 using API_Simulacao_Hack.Interfaces.Repositories;
 using API_Simulacao_Hack.Interfaces.Services;
 using API_Simulacao_Hack.Models;
+using API_Simulacao_Hack.Repositories;
 using API_Simulacao_Hack.Services;
+using API_Simulacao_Hack.Util;
 using API_Simulacao_Hack.Validators;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -17,6 +19,7 @@ namespace API_Simulacao_Hack.Test
         private readonly Mock<ILogger<SimulacaoService>> _loggerMock;
         private readonly Mock<ISimulacaoRepository> _simulacaoRepositoryMock;
         private readonly Mock<IEventHubService> _eventHubServiceMock;
+        private readonly Mock<ICalculoService> _calculoServiceMock;
         private readonly SolicitacaoSimulacaoValidator _validador;
 
         private readonly SimulacaoService _simulacaoService;
@@ -26,12 +29,14 @@ namespace API_Simulacao_Hack.Test
             _loggerMock = new Mock<ILogger<SimulacaoService>>();
             _simulacaoRepositoryMock = new Mock<ISimulacaoRepository>();
             _eventHubServiceMock = new Mock<IEventHubService>();
+            _calculoServiceMock = new Mock<ICalculoService>();
             _validador = new SolicitacaoSimulacaoValidator();
 
             _simulacaoService = new SimulacaoService(
                 _loggerMock.Object,
                 _eventHubServiceMock.Object,    
                 _simulacaoRepositoryMock.Object,
+                _calculoServiceMock.Object,
                 _validador);
         }
 
@@ -153,9 +158,20 @@ namespace API_Simulacao_Hack.Test
                 .Setup(repo => repo.MontaConsultaTotal())
                 .Returns(dbSetMock.Object);
 
+            // Simule o mapeamento para DTOs
+            var lsRetornoDTO = lsSimulacoes
+                .Take(qtdRegistrosPagina)
+                .Select(s => new RetornoListaSimulacaoDTO
+                {
+                    IdSimulacao = s.IdSimulacao,
+                    ValorDesejado = s.ValorDesejado,
+                    Prazo = s.Prazo,
+                    ValorTotalParcelas = s.ValorTotalParcelas
+                }).ToList();
+
             _simulacaoRepositoryMock
                 .Setup(repo => repo.ListaSimulacoesPaginadas(dbSetMock.Object, pagina, qtdRegistrosPagina))
-                .ReturnsAsync(lsSimulacoes.Take(qtdRegistrosPagina).ToList());
+                .ReturnsAsync(lsRetornoDTO);
 
             // Act
             var result = await _simulacaoService.ListaSimulacoes(pagina, qtdRegistrosPagina);
@@ -240,9 +256,33 @@ namespace API_Simulacao_Hack.Test
                 VrMaximo = 10000
             };
 
+            List<ParcelasDTO> lsParcelas = new List<ParcelasDTO>()
+            {
+                new ParcelasDTO
+                {
+                    Numero = 1,
+                    ValorAmortizacao = 100,
+                    ValorJuros = 20,
+                    ValorPrestacao = 120
+                },
+            };
+
+            var retornoSimulacao = new RetornoSimulacaoDTO
+            {
+                ResultadosSimulacao = new List<ResultadoSimulacaoDTO>
+                {
+                    new ResultadoSimulacaoDTO { Tipo = "PRICE", Parcelas = lsParcelas },
+                    new ResultadoSimulacaoDTO { Tipo = "SAC", Parcelas = lsParcelas }
+                }
+            };
+
             _simulacaoRepositoryMock
                 .Setup(repo => repo.BuscaProduto(solicitacao))
                 .ReturnsAsync(produto);
+
+            _calculoServiceMock
+                .Setup(repo => repo.CalculaParcelas(solicitacao, produto.PcTaxaJuros))
+                .Returns(retornoSimulacao.ResultadosSimulacao);
 
             _simulacaoRepositoryMock
                 .Setup(repo => repo.SalvarSimulacao(It.IsAny<Simulacao>()))
@@ -275,9 +315,33 @@ namespace API_Simulacao_Hack.Test
                 VrMaximo = 10000
             };
 
+            List<ParcelasDTO> lsParcelas = new List<ParcelasDTO>()
+            {
+                new ParcelasDTO
+                {
+                    Numero = 1,
+                    ValorAmortizacao = 100,
+                    ValorJuros = 20,
+                    ValorPrestacao = 120
+                },
+            };
+
+            var retornoSimulacao = new RetornoSimulacaoDTO
+            {
+                ResultadosSimulacao = new List<ResultadoSimulacaoDTO>
+                {
+                    new ResultadoSimulacaoDTO { Tipo = "PRICE", Parcelas = lsParcelas },
+                    new ResultadoSimulacaoDTO { Tipo = "SAC", Parcelas = lsParcelas }
+                }
+            };
+
             _simulacaoRepositoryMock
                 .Setup(repo => repo.BuscaProduto(solicitacao))
                 .ReturnsAsync(produto);
+
+            _calculoServiceMock
+                .Setup(repo => repo.CalculaParcelas(solicitacao, produto.PcTaxaJuros))
+                .Returns(retornoSimulacao.ResultadosSimulacao);
 
             _simulacaoRepositoryMock
                 .Setup(repo => repo.SalvarSimulacao(It.IsAny<Simulacao>()))
@@ -292,6 +356,85 @@ namespace API_Simulacao_Hack.Test
 
             // Assert
             Assert.NotEmpty(result.Data!.ResultadosSimulacao);
+        }
+
+        #endregion
+
+        #region GeraIdSimulacao
+
+        [Fact]
+        public async Task GeraIdSimulacao_DeveRetornarIdCorreto_QuandoNaoExistemSimulacoes()
+        {
+            // Arrange
+            var mockRepo = new Mock<ISimulacaoRepository>();
+            mockRepo.Setup(r => r.ContaSimulacoesPorDataAsync(It.IsAny<DateOnly>())).ReturnsAsync(0);
+
+            string dataReferencia = DateTime.Now.ToString("yyyyMMdd");
+            int esperado = int.Parse($"{dataReferencia}1");
+
+            // Act
+            int resultado = await _simulacaoService.GeraIdSimulacao();
+
+            // Assert
+            Assert.Equal(esperado, resultado);
+        }
+
+        [Fact]
+        public async Task GeraIdSimulacao_DeveRetornarIdCorreto_QuandoExistemSimulacoes()
+        {
+            // Arrange
+            _simulacaoRepositoryMock.Setup(r => r.ContaSimulacoesPorDataAsync(It.IsAny<DateOnly>())).ReturnsAsync(5);
+
+            string dataReferencia = DateTime.Now.ToString("yyyyMMdd");
+            int esperado = int.Parse($"{dataReferencia}6");
+
+            // Act
+            int resultado = await _simulacaoService.GeraIdSimulacao();
+
+            // Assert
+            Assert.Equal(esperado, resultado);
+        }
+
+        [Fact]
+        public async Task RealizaSimulacao_DeveRetornarBadRequest_QuandoTipoSimulacaoDesconhecido()
+        {
+            SolicitacaoSimulacaoDTO solicitacao = new SolicitacaoSimulacaoDTO()
+            {
+                ValorDesejado = 1200,
+                Prazo = 12
+            };
+
+
+            Produto produto = new Produto
+            {
+                CoProduto = 1,
+                NoProduto = "Produto 1",
+                PcTaxaJuros = 0.0179M,
+                NuMinimoMeses = 0,
+                NuMaximoMeses = 24,
+                VrMinimo = 200,
+                VrMaximo = 10000
+            };
+
+            _simulacaoRepositoryMock.Setup(r => r.BuscaProduto(solicitacao)).ReturnsAsync(produto);
+
+            var retornoSimulacao = new RetornoSimulacaoDTO
+            {
+                ResultadosSimulacao = new List<ResultadoSimulacaoDTO>
+                {
+                    new ResultadoSimulacaoDTO { Tipo = "PRICE", Parcelas = new List<ParcelasDTO>() },
+                    new ResultadoSimulacaoDTO { Tipo = "SAC", Parcelas = new List<ParcelasDTO>() }
+                }
+            };
+
+            _calculoServiceMock.Setup(c => c.CalculaParcelas(solicitacao, produto.PcTaxaJuros)).Returns(retornoSimulacao.ResultadosSimulacao);
+
+            // Act
+            var result = await _simulacaoService.RealizaSimulacao(solicitacao);
+
+            //Assert
+            Assert.Equal("Erro ao salvar simulação no banco de dados", result.ErrorMessage);
+
         }
 
         #endregion
