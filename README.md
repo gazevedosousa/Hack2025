@@ -25,7 +25,6 @@ API_Simulacao_Hack/
 │  Dockerfile
 ├─ Controllers/
 ├─ DTO/
-├─ Enum/
 ├─ Interfaces/
 ├─ Middleware/
 ├─ Migration/
@@ -40,14 +39,13 @@ API_Simulacao_Hack/
 
 * **Controllers/**: Contém os endpoints da API.
 * **DTO/**: Data Transfer Objects usados para requisições e respostas.
-* **Enum/**: Contém os Enums da API.
 * **Interfaces/**: Contém os Interfaces da API.
 * **Middleware/**: Contém o Middleware da telemetria da API.
-* **Migrations/**: Contém as Migrations do Contexto de Simulação do arquivo SQLite.
+* **Migrations/**: Contém as Migrations do Contexto de Simulação(SimulacaoContext) para criação do arquivo SQLite.
 * **Models/**: Contém os modelos e contextos da API.
 * **Repositories/**: Contém os Repositories da API.
 * **Services/**: Contém os Services da API.
-* **Util/**: Classes de utilitários.
+* **Util/**: Contém os Utilitários da API.
 * **Validators/**: Contém o Validator do DTO de solicitação de simulação.
 * **Wrappers/**: Contém o Wrapper para os envios paginados da API.
 * **Tests/**: Testes unitários com XUnit.
@@ -147,33 +145,12 @@ docker run -d -p 8080:8080 --name api_simulacao_hack_container api_simulacao_hac
 * O Kestrel dentro do container está configurado para escutar em **http\://+:8080**, garantindo acesso via host.
 * Para alterações em `appsettings.json`, é necessário reconstruir a imagem se estiver usando Docker.
 * Testes unitários cobrem cálculos PRICE e SAC, incluindo conferência de juros, amortização e saldo devedor final.
-* Quando é solicitada uma simulação, são gravadas 2 linhas no banco SQLite, sendo uma para cada tipo de simulação (SAC e PRICE).
-* Quando é solicitada a lista agrupada por produto e dia, a soma de cada valor leva em conta as 2 linhas gravadas.
 * Use `docker ps` para verificar se o container está ativo e mapeando corretamente a porta.
+* Na listagem apresentada na rota `listaSimulacoes` o parâmetro `valorTotalParcelas` é baseado na simulação SAC
+* Na listagem apresentada na rota `listaSimulacoesPorProdutoEDia` o parâmetro `valorTotalCredito` é baseado na simulação SAC
 
 
-## 6. Funcionamento das Simulações
-
-Cada solicitação ao método RealizaSimulacao gera duas simulações para o mesmo pedido:
-
-* Uma simulação no modelo SAC
-* Uma simulação no modelo PRICE
-
-Ambas são salvas separadamente no banco de dados, cada uma com seus próprios cálculos de parcelas.
-
-## 7. Impacto na Rota de Agrupamento
-
-A rota ListaSimulacoesPorProdutoEDia retorna as simulações agrupadas por produto e data.
-
-Como cada solicitação gera duas simulações (SAC e PRICE), os valores agregados (média de juros, valor total desejado, valor total de crédito e valor médio da prestação) consideram todas as simulações realizadas naquele dia para cada produto.
-
-### Atenção:
-```bash
-Os cálculos de agregação podem ser influenciados pelo fato de cada solicitação gerar duas simulações.
-Por exemplo, a média das prestações será calculada considerando tanto SAC quanto PRICE.
-```
-
-## 8. Resumo dos Comandos Principais
+## 6. Resumo dos Comandos Principais
 
 ### Local
 
