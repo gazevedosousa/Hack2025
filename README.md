@@ -54,7 +54,7 @@ API_Simulacao_Hack/
 
 ### 3.1 Restaurar pacotes NuGet
 
-No terminal, dentro da pasta do projeto:
+No terminal, dentro da pasta do projeto (API_Simulacao_Hack):
 
 ```bash
 dotnet restore API_Simulacao_Hack.csproj
@@ -77,6 +77,8 @@ dotnet run --project API_Simulacao_Hack.csproj
 ### 3.4 Testes Unitários
 
 Para rodar os testes XUnit:
+
+No terminal, dentro da pasta (API_Simulacao_Hack.Test)
 
 ```bash
 dotnet test
