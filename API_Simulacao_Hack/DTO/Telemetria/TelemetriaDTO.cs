@@ -5,7 +5,7 @@ namespace API_Simulacao_Hack.DTO
     public class TelemetriaDTO
     {
         [JsonPropertyName("nomeApi")]
-        public string NomeApi { get; set; }
+        public string NomeApi { get; set; } = string.Empty;
         
         [JsonPropertyName("qtdRequisicoes")]
         public int QtdRequisicoes { get; set; }
