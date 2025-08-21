@@ -13,14 +13,11 @@ namespace API_Simulacao_Hack.Services;
 [ExcludeFromCodeCoverage]
 public class EventHubService: IEventHubService
 {
-    private readonly ILogger<EventHubService> _logger;
     private readonly EventHubProducerClient _ehProducer;
 
     public EventHubService(
-        ILogger<EventHubService> logger,
         EventHubProducerClient ehProducer)
     {
-        _logger = logger;
         _ehProducer = ehProducer;
     }
 
@@ -28,28 +25,28 @@ public class EventHubService: IEventHubService
     {
         try
         {
-            var eventBatch = await _ehProducer.CreateBatchAsync();
+            var batch = await _ehProducer.CreateBatchAsync();
 
-            var msg = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(eventHubDTO));
+            var msgEventHub = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(eventHubDTO));
 
-            if (!eventBatch.TryAdd(new EventData(msg)))
+            if (!batch.TryAdd(new EventData(msgEventHub)))
             {
-                await _ehProducer.SendAsync(eventBatch);
-                eventBatch.Dispose();
-                eventBatch = await _ehProducer.CreateBatchAsync();
+                await _ehProducer.SendAsync(batch);
+                batch.Dispose();
+                batch = await _ehProducer.CreateBatchAsync();
 
-                if (!eventBatch.TryAdd(new EventData(msg)))
+                if (!batch.TryAdd(new EventData(msgEventHub)))
                 {
                     throw new CustomException("Erro no batch para envio das mensagens");
                 }
             }
 
-            if (eventBatch.SizeInBytes > 0)
+            if (batch.SizeInBytes > 0)
             {
-                await _ehProducer.SendAsync(eventBatch);
+                await _ehProducer.SendAsync(batch);
             }
 
-            eventBatch.Dispose();
+            batch.Dispose();
         }
         catch
         {
