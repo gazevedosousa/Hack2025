@@ -146,7 +146,7 @@ docker run -d -p 8080:8080 --name api_simulacao_hack_container api_simulacao_hac
 * Certifique-se de que **nenhum outro serviço está usando a porta 8080** no host.
 * O Kestrel dentro do container está configurado para escutar em **http\://+:8080**, garantindo acesso via host.
 * Para alterações em `appsettings.json`, é necessário reconstruir a imagem se estiver usando Docker.
-* Testes unitários cobrem cálculos PRICE e SAC, incluindo conferência de juros, amortização e saldo devedor final.
+* Testes unitários estão cobrindo acima de 80% do código da aplicação, excluindo as partes não necessárias para os testes.
 * Use `docker ps` para verificar se o container está ativo e mapeando corretamente a porta.
 * Na listagem apresentada na rota `listaSimulacoes` o parâmetro `valorTotalParcelas` é baseado na simulação SAC
 * Na listagem apresentada na rota `listaSimulacoesPorProdutoEDia` o parâmetro `valorTotalCredito` é baseado na simulação SAC
