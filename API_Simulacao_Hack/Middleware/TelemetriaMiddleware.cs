@@ -1,7 +1,9 @@
 ﻿using API_Simulacao_Hack.Interfaces.Services;
+using System.Diagnostics.CodeAnalysis;
 
 namespace API_Simulacao_Hack.Middleware
 {
+    [ExcludeFromCodeCoverage]
     public class TelemetriaMiddleware
     {
         private readonly RequestDelegate _next;

@@ -1,7 +1,7 @@
 ﻿using API_Simulacao_Hack.Services;
 using API_Simulacao_Hack.DTO;
 
-namespace API_Simulacao_Hack.Test
+namespace API_Simulacao_Hack.Test.Services
 {
     public class CalculoServiceTest
     {

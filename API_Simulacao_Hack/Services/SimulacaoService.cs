@@ -147,7 +147,7 @@ namespace API_Simulacao_Hack.Services
         {
             string dataReferencia = new DateTime().GetDataAtual().Date.ToString("yyyyMMdd");
 
-            int sequencial = await _simulacaoRepository.ContaSimulacoesPorDataAsync(DateOnly.FromDateTime(new DateTime().GetDataAtual().Date));
+            int sequencial = await _simulacaoRepository.ContaSimulacoesPorData(DateOnly.FromDateTime(new DateTime().GetDataAtual().Date));
 
             sequencial++;
 

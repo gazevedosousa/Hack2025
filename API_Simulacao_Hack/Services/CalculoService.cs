@@ -5,7 +5,7 @@ namespace API_Simulacao_Hack.Services
 {
     public class CalculoService: ICalculoService
     {
-             public List<ResultadoSimulacaoDTO> CalculaParcelas(SolicitacaoSimulacaoDTO simulacaoDTO, decimal pcTaxaJuros)
+        public List<ResultadoSimulacaoDTO> CalculaParcelas(SolicitacaoSimulacaoDTO simulacaoDTO, decimal pcTaxaJuros)
         {
             List<ResultadoSimulacaoDTO> listaResultados = new List<ResultadoSimulacaoDTO>();
 
@@ -17,6 +17,7 @@ namespace API_Simulacao_Hack.Services
 
             return listaResultados;
         }
+
         // Método PRICE
         public ResultadoSimulacaoDTO CalcularParcelasPrice(SolicitacaoSimulacaoDTO simulacaoDTO, decimal pcTaxaJuros)
         {

@@ -59,7 +59,7 @@ namespace API_Simulacao_Hack.Repositories
                 .ToListAsync();
         }
 
-        public async Task<int> ContaSimulacoesPorDataAsync(DateOnly dataReferencia)
+        public async Task<int> ContaSimulacoesPorData(DateOnly dataReferencia)
         {
             return await _simulacaoContext.Simulacoes
                 .CountAsync(s => s.DataReferencia == dataReferencia);

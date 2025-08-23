@@ -1,5 +1,8 @@
-﻿namespace API_Simulacao_Hack.Util
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace API_Simulacao_Hack.Util
 {
+    [ExcludeFromCodeCoverage]
     public static class DatetimeExtension
     {
         public static DateTime GetDataAtual(this DateTime dataAtual)

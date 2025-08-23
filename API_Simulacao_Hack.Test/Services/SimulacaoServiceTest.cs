@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace API_Simulacao_Hack.Test
+namespace API_Simulacao_Hack.Test.Services
 {
     public class SimulacaoServiceTest
     {
@@ -236,11 +236,12 @@ namespace API_Simulacao_Hack.Test
                 new Simulacao
                 {
                     IdSimulacao = 2,
-                    ValorDesejado = 8500,
-                    Prazo = 24,
-                    ValorTotalParcelas = 10000
+                    ValorDesejado = 20000,
+                    Prazo = 48,
+                    ValorTotalParcelas = 27840
                 },
             };
+
 
             var queryableSimulacoes = lsSimulacoes.AsQueryable();
 
@@ -365,7 +366,7 @@ namespace API_Simulacao_Hack.Test
         {
             // Arrange
             var mockRepo = new Mock<ISimulacaoRepository>();
-            mockRepo.Setup(r => r.ContaSimulacoesPorDataAsync(It.IsAny<DateOnly>())).ReturnsAsync(0);
+            mockRepo.Setup(r => r.ContaSimulacoesPorData(It.IsAny<DateOnly>())).ReturnsAsync(0);
 
             string dataReferencia = DateTime.Now.ToString("yyyyMMdd");
             int esperado = int.Parse($"{dataReferencia}1");
@@ -381,7 +382,7 @@ namespace API_Simulacao_Hack.Test
         public async Task GeraIdSimulacao_DeveRetornarIdCorreto_QuandoExistemSimulacoes()
         {
             // Arrange
-            _simulacaoRepositoryMock.Setup(r => r.ContaSimulacoesPorDataAsync(It.IsAny<DateOnly>())).ReturnsAsync(5);
+            _simulacaoRepositoryMock.Setup(r => r.ContaSimulacoesPorData(It.IsAny<DateOnly>())).ReturnsAsync(5);
 
             string dataReferencia = DateTime.Now.ToString("yyyyMMdd");
             int esperado = int.Parse($"{dataReferencia}6");

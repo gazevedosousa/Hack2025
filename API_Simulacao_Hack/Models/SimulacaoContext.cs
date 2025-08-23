@@ -11,7 +11,8 @@ namespace API_Simulacao_Hack.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=simulacao.db");
+            if (!optionsBuilder.IsConfigured)
+                optionsBuilder.UseSqlite("Data Source=simulacao.db");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

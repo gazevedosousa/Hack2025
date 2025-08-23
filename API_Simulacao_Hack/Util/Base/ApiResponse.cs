@@ -1,5 +1,8 @@
-﻿namespace API_Simulacao_Hack.Util.Base
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace API_Simulacao_Hack.Util.Base
 {
+    [ExcludeFromCodeCoverage]
     public class ApiResponse<T>
     {
         public int StatusCode { get; set; }
