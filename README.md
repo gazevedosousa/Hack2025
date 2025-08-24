@@ -157,7 +157,7 @@ docker run -d -p 8080:8080 --name api_simulacao_hack_container api_simulacao_hac
 
 
 
-## 5. Observações importantes
+## 6. Observações importantes
 
 * Certifique-se de que **nenhum outro serviço está usando a porta 8080** no host.
 * O Kestrel dentro do container está configurado para escutar em **http\://+:8080**, garantindo acesso via host.
@@ -167,7 +167,7 @@ docker run -d -p 8080:8080 --name api_simulacao_hack_container api_simulacao_hac
 
 
 
-## 6. Resumo dos Comandos Principais
+## 7. Resumo dos Comandos Principais
 
 ### Local
 
