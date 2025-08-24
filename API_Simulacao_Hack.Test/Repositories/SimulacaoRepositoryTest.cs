@@ -100,7 +100,7 @@ namespace API_Simulacao_Hack.Test.Repositories
                 DataReferencia = DateOnly.FromDateTime(DateTime.Now),
                 TaxaJuros = 0.0179M,
                 ValorMediaPrestacoes = 111.64M,
-                TipoSimulacao = "SAC"
+                TipoSimulacao = 1
             };
 
             // Act
@@ -134,7 +134,7 @@ namespace API_Simulacao_Hack.Test.Repositories
                 DataReferencia = DateOnly.FromDateTime(DateTime.Now),
                 TaxaJuros = 0.0179M,
                 ValorMediaPrestacoes = 111.64M,
-                TipoSimulacao = "SAC"
+                TipoSimulacao = 1
             };
 
             // Act
@@ -167,7 +167,7 @@ namespace API_Simulacao_Hack.Test.Repositories
                 DataReferencia = DateOnly.FromDateTime(DateTime.Now),
                 TaxaJuros = 0.0179M,
                 ValorMediaPrestacoes = 111.64M,
-                TipoSimulacao = "SAC"
+                TipoSimulacao = 1
             };
 
             _simulacaoContext.Add(simulacao);
@@ -217,7 +217,7 @@ namespace API_Simulacao_Hack.Test.Repositories
 
             int pagina = 1;
             int qtdRegistrosPagina = 1;
-            string tipoSimulacao = "SAC";
+            int tipoSimulacao = 1;
 
             // Act
             var result = await simulacaoRepository.ListaSimulacoesPaginadas(dbSet, pagina, qtdRegistrosPagina, tipoSimulacao);
@@ -239,7 +239,7 @@ namespace API_Simulacao_Hack.Test.Repositories
 
             SimulacaoRepository simulacaoRepository = new SimulacaoRepository(_dbHack, _simulacaoContext);
 
-            Simulacao simulacao1 = new Simulacao()
+            Simulacao simulacaoSAC = new Simulacao()
             {
                 IdSimulacao = 1,
                 ValorDesejado = 1200,
@@ -250,25 +250,25 @@ namespace API_Simulacao_Hack.Test.Repositories
                 DataReferencia = DateOnly.FromDateTime(DateTime.Now),
                 TaxaJuros = 0.0179M,
                 ValorMediaPrestacoes = 111.64M,
-                TipoSimulacao = "SAC"
+                TipoSimulacao = 1
             };
 
-            Simulacao simulacao2 = new Simulacao()
+            Simulacao simulacaoPRICE = new Simulacao()
             {
-                IdSimulacao = 2,
-                ValorDesejado = 20000,
-                Prazo = 48,
-                ValorTotalParcelas = 27840,
-                CodigoProduto = 2,
-                DescricaoProduto = "Produto 2",
+                IdSimulacao = 1,
+                ValorDesejado = 1200,
+                Prazo = 12,
+                ValorTotalParcelas = 1344.12M,
+                CodigoProduto = 1,
+                DescricaoProduto = "Produto 1",
                 DataReferencia = DateOnly.FromDateTime(DateTime.Now),
-                TaxaJuros = 0.0160M,
-                ValorMediaPrestacoes = 580,
-                TipoSimulacao = "SAC"
+                TaxaJuros = 0.0179M,
+                ValorMediaPrestacoes = 112.01M,
+                TipoSimulacao = 2
             };
 
-            _simulacaoContext.Add(simulacao1);
-            _simulacaoContext.Add(simulacao2);
+            _simulacaoContext.Add(simulacaoSAC);
+            _simulacaoContext.Add(simulacaoPRICE);
             _simulacaoContext.SaveChanges();
 
             DbSet<Simulacao> dbSet = _simulacaoContext.Simulacoes;
@@ -276,7 +276,7 @@ namespace API_Simulacao_Hack.Test.Repositories
             int pagina = 1;
             int qtdRegistrosPagina = 1;
 
-            string tipoSimulacao = "SAC";
+            int tipoSimulacao = 1;
 
             // Act
             var result = await simulacaoRepository.ListaSimulacoesPaginadas(dbSet, pagina, qtdRegistrosPagina, tipoSimulacao);
@@ -300,7 +300,7 @@ namespace API_Simulacao_Hack.Test.Repositories
 
             SimulacaoRepository simulacaoRepository = new SimulacaoRepository(_dbHack, _simulacaoContext);
 
-            Simulacao simulacao1 = new Simulacao()
+            Simulacao simulacaoSAC1 = new Simulacao()
             {
                 IdSimulacao = 1,
                 ValorDesejado = 1200,
@@ -311,32 +311,32 @@ namespace API_Simulacao_Hack.Test.Repositories
                 DataReferencia = DateOnly.FromDateTime(DateTime.Now),
                 TaxaJuros = 0.0179M,
                 ValorMediaPrestacoes = 111.64M,
-                TipoSimulacao = "SAC"
+                TipoSimulacao = 1
             };
 
-            Simulacao simulacao2 = new Simulacao()
+            Simulacao simulacaoSAC2 = new Simulacao()
             {
                 IdSimulacao = 2,
-                ValorDesejado = 20000,
+                ValorDesejado = 25000,
                 Prazo = 48,
-                ValorTotalParcelas = 27840,
+                ValorTotalParcelas = 35718.76M,
                 CodigoProduto = 2,
                 DescricaoProduto = "Produto 2",
                 DataReferencia = DateOnly.FromDateTime(DateTime.Now),
-                TaxaJuros = 0.0160M,
-                ValorMediaPrestacoes = 580,
-                TipoSimulacao = "SAC"
+                TaxaJuros = 0.0175M,
+                ValorMediaPrestacoes = 744.14M,
+                TipoSimulacao = 1
             };
 
-            _simulacaoContext.Add(simulacao1);
-            _simulacaoContext.Add(simulacao2);
+            _simulacaoContext.Add(simulacaoSAC1);
+            _simulacaoContext.Add(simulacaoSAC2);
             _simulacaoContext.SaveChanges();
 
             DbSet<Simulacao> dbSet = _simulacaoContext.Simulacoes;
 
             int pagina = 1;
             int qtdRegistrosPagina = 2;
-            string tipoSimulacao = "SAC";
+            int tipoSimulacao = 1;
 
             // Act
             var result = await simulacaoRepository.ListaSimulacoesPaginadas(dbSet, pagina, qtdRegistrosPagina, tipoSimulacao);
@@ -345,7 +345,7 @@ namespace API_Simulacao_Hack.Test.Repositories
             Assert.NotNull(result);
             Assert.Equal(2, result.Count);
             Assert.Contains(result, r => r.IdSimulacao == 1 && r.ValorDesejado == 1200);
-            Assert.Contains(result, r => r.IdSimulacao == 2 && r.ValorDesejado == 20000);
+            Assert.Contains(result, r => r.IdSimulacao == 2 && r.ValorDesejado == 25000);
         }
 
         [Fact]
@@ -362,8 +362,7 @@ namespace API_Simulacao_Hack.Test.Repositories
 
             DateOnly dataReferencia = DateOnly.FromDateTime(DateTime.Now);
 
-            string tipoSimulacao = "SAC";
-
+            int tipoSimulacao = 1;
 
             // Act
             var result = await simulacaoRepository.ListaSimulacoesPorDia(dataReferencia, tipoSimulacao);
@@ -385,7 +384,7 @@ namespace API_Simulacao_Hack.Test.Repositories
 
             SimulacaoRepository simulacaoRepository = new SimulacaoRepository(_dbHack, _simulacaoContext);
 
-            Simulacao simulacao1 = new Simulacao()
+            Simulacao simulacaoSAC = new Simulacao()
             {
                 IdSimulacao = 1,
                 ValorDesejado = 1200,
@@ -396,30 +395,30 @@ namespace API_Simulacao_Hack.Test.Repositories
                 DataReferencia = DateOnly.FromDateTime(DateTime.Now),
                 TaxaJuros = 0.0179M,
                 ValorMediaPrestacoes = 111.64M,
-                TipoSimulacao = "SAC"
+                TipoSimulacao = 1
             };
 
-            Simulacao simulacao2 = new Simulacao()
+            Simulacao simulacaoPRICE = new Simulacao()
             {
-                IdSimulacao = 2,
-                ValorDesejado = 20000,
-                Prazo = 48,
-                ValorTotalParcelas = 27840,
-                CodigoProduto = 2,
-                DescricaoProduto = "Produto 2",
-                DataReferencia = DateOnly.FromDateTime(new DateTime(2025,01,01)),
-                TaxaJuros = 0.0160M,
-                ValorMediaPrestacoes = 580,
-                TipoSimulacao = "SAC"
+                IdSimulacao = 1,
+                ValorDesejado = 1200,
+                Prazo = 12,
+                ValorTotalParcelas = 1344.12M,
+                CodigoProduto = 1,
+                DescricaoProduto = "Produto 1",
+                DataReferencia = DateOnly.FromDateTime(DateTime.Now),
+                TaxaJuros = 0.0179M,
+                ValorMediaPrestacoes = 112.01M,
+                TipoSimulacao = 2
             };
 
-            _simulacaoContext.Add(simulacao1);
-            _simulacaoContext.Add(simulacao2);
+            _simulacaoContext.Add(simulacaoSAC);
+            _simulacaoContext.Add(simulacaoPRICE);
             _simulacaoContext.SaveChanges();
 
             DateOnly dataReferencia = DateOnly.FromDateTime(DateTime.Now);
 
-            string tipoSimulacao = "SAC";
+            int tipoSimulacao = 1;
 
 
             // Act
@@ -444,7 +443,7 @@ namespace API_Simulacao_Hack.Test.Repositories
 
             SimulacaoRepository simulacaoRepository = new SimulacaoRepository(_dbHack, _simulacaoContext);
 
-            Simulacao simulacao1 = new Simulacao()
+            Simulacao simulacaoSAC1 = new Simulacao()
             {
                 IdSimulacao = 1,
                 ValorDesejado = 1200,
@@ -455,30 +454,30 @@ namespace API_Simulacao_Hack.Test.Repositories
                 DataReferencia = DateOnly.FromDateTime(DateTime.Now),
                 TaxaJuros = 0.0179M,
                 ValorMediaPrestacoes = 111.64M,
-                TipoSimulacao = "SAC"
+                TipoSimulacao = 1
             };
 
-            Simulacao simulacao2 = new Simulacao()
+            Simulacao simulacaoSAC2 = new Simulacao()
             {
                 IdSimulacao = 2,
-                ValorDesejado = 20000,
+                ValorDesejado = 25000,
                 Prazo = 48,
-                ValorTotalParcelas = 27840,
+                ValorTotalParcelas = 35718.76M,
                 CodigoProduto = 2,
                 DescricaoProduto = "Produto 2",
                 DataReferencia = DateOnly.FromDateTime(DateTime.Now),
-                TaxaJuros = 0.0160M,
-                ValorMediaPrestacoes = 580,
-                TipoSimulacao = "SAC"
+                TaxaJuros = 0.0175M,
+                ValorMediaPrestacoes = 744.14M,
+                TipoSimulacao = 1
             };
 
-            _simulacaoContext.Add(simulacao1);
-            _simulacaoContext.Add(simulacao2);
+            _simulacaoContext.Add(simulacaoSAC1);
+            _simulacaoContext.Add(simulacaoSAC2);
             _simulacaoContext.SaveChanges();
 
             DateOnly dataReferencia = DateOnly.FromDateTime(DateTime.Now);
 
-            string tipoSimulacao = "SAC";
+            int tipoSimulacao = 1;
 
             // Act
             var result = await simulacaoRepository.ListaSimulacoesPorDia(dataReferencia, tipoSimulacao);
@@ -487,7 +486,7 @@ namespace API_Simulacao_Hack.Test.Repositories
             Assert.NotNull(result);
             Assert.Equal(2, result.Count);
             Assert.Contains(result, r => r.IdSimulacao == 1 && r.ValorDesejado == 1200);
-            Assert.Contains(result, r => r.IdSimulacao == 2 && r.ValorDesejado == 20000);
+            Assert.Contains(result, r => r.IdSimulacao == 2 && r.ValorDesejado == 25000);
         }
 
         [Fact]
@@ -523,7 +522,7 @@ namespace API_Simulacao_Hack.Test.Repositories
 
             SimulacaoRepository simulacaoRepository = new SimulacaoRepository(_dbHack, _simulacaoContext);
 
-            Simulacao simulacao1SAC = new Simulacao()
+            Simulacao simulacaoSAC1 = new Simulacao()
             {
                 IdSimulacao = 1,
                 ValorDesejado = 1200,
@@ -534,55 +533,56 @@ namespace API_Simulacao_Hack.Test.Repositories
                 DataReferencia = DateOnly.FromDateTime(DateTime.Now),
                 TaxaJuros = 0.0179M,
                 ValorMediaPrestacoes = 111.64M,
-                TipoSimulacao = "SAC"
+                TipoSimulacao = 1
             };
 
-            Simulacao simulacao1PRICE = new Simulacao()
+            Simulacao simulacaoPRICE1 = new Simulacao()
             {
                 IdSimulacao = 1,
                 ValorDesejado = 1200,
                 Prazo = 12,
-                ValorTotalParcelas = 1339.62M,
+                ValorTotalParcelas = 1344.12M,
                 CodigoProduto = 1,
                 DescricaoProduto = "Produto 1",
                 DataReferencia = DateOnly.FromDateTime(DateTime.Now),
                 TaxaJuros = 0.0179M,
-                ValorMediaPrestacoes = 111.64M,
-                TipoSimulacao = "PRICE"
+                ValorMediaPrestacoes = 112.01M,
+                TipoSimulacao = 2
             };
 
-            Simulacao simulacao2SAC = new Simulacao()
+            Simulacao simulacaoSAC2 = new Simulacao()
             {
                 IdSimulacao = 2,
-                ValorDesejado = 20000,
-                Prazo = 48,
-                ValorTotalParcelas = 27840,
-                CodigoProduto = 2,
-                DescricaoProduto = "Produto 2",
+                ValorDesejado = 1200,
+                Prazo = 12,
+                ValorTotalParcelas = 1339.62M,
+                CodigoProduto = 1,
+                DescricaoProduto = "Produto 1",
                 DataReferencia = DateOnly.FromDateTime(new DateTime(2025,01,01)),
-                TaxaJuros = 0.0160M,
-                ValorMediaPrestacoes = 580,
-                TipoSimulacao = "SAC"
+                TaxaJuros = 0.0179M,
+                ValorMediaPrestacoes = 111.64M,
+                TipoSimulacao = 1
             };
 
-            Simulacao simulacao2PRICE = new Simulacao()
+            Simulacao simulacaoPRICE2 = new Simulacao()
             {
                 IdSimulacao = 2,
-                ValorDesejado = 20000,
-                Prazo = 48,
-                ValorTotalParcelas = 27840,
-                CodigoProduto = 2,
-                DescricaoProduto = "Produto 2",
-                DataReferencia = DateOnly.FromDateTime(new DateTime(2025, 01, 01)),
-                TaxaJuros = 0.0160M,
-                ValorMediaPrestacoes = 580,
-                TipoSimulacao = "PRICE"
+                ValorDesejado = 1200,
+                Prazo = 12,
+                ValorTotalParcelas = 1344.12M,
+                CodigoProduto = 1,
+                DescricaoProduto = "Produto 1",
+                DataReferencia = DateOnly.FromDateTime(new DateTime(2025,01,01)),
+                TaxaJuros = 0.0179M,
+                ValorMediaPrestacoes = 112.01M,
+                TipoSimulacao = 2
             };
 
-            _simulacaoContext.Add(simulacao1SAC);
-            _simulacaoContext.Add(simulacao1PRICE);
-            _simulacaoContext.Add(simulacao2SAC);
-            _simulacaoContext.Add(simulacao2PRICE);
+
+            _simulacaoContext.Add(simulacaoSAC1);
+            _simulacaoContext.Add(simulacaoPRICE1);
+            _simulacaoContext.Add(simulacaoSAC2);
+            _simulacaoContext.Add(simulacaoPRICE2);
             _simulacaoContext.SaveChanges();
 
             DateOnly dataReferencia = DateOnly.FromDateTime(DateTime.Now);
@@ -606,7 +606,7 @@ namespace API_Simulacao_Hack.Test.Repositories
 
             SimulacaoRepository simulacaoRepository = new SimulacaoRepository(_dbHack, _simulacaoContext);
 
-            Simulacao simulacao1SAC = new Simulacao()
+            Simulacao simulacaoSAC1 = new Simulacao()
             {
                 IdSimulacao = 1,
                 ValorDesejado = 1200,
@@ -617,12 +617,26 @@ namespace API_Simulacao_Hack.Test.Repositories
                 DataReferencia = DateOnly.FromDateTime(DateTime.Now),
                 TaxaJuros = 0.0179M,
                 ValorMediaPrestacoes = 111.64M,
-                TipoSimulacao = "SAC"
+                TipoSimulacao = 1
             };
 
-            Simulacao simulacao1PRICE = new Simulacao()
+            Simulacao simulacaoPRICE1 = new Simulacao()
             {
                 IdSimulacao = 1,
+                ValorDesejado = 1200,
+                Prazo = 12,
+                ValorTotalParcelas = 1344.12M,
+                CodigoProduto = 1,
+                DescricaoProduto = "Produto 1",
+                DataReferencia = DateOnly.FromDateTime(DateTime.Now),
+                TaxaJuros = 0.0179M,
+                ValorMediaPrestacoes = 112.01M,
+                TipoSimulacao = 2
+            };
+
+            Simulacao simulacaoSAC2 = new Simulacao()
+            {
+                IdSimulacao = 2,
                 ValorDesejado = 1200,
                 Prazo = 12,
                 ValorTotalParcelas = 1339.62M,
@@ -631,41 +645,28 @@ namespace API_Simulacao_Hack.Test.Repositories
                 DataReferencia = DateOnly.FromDateTime(DateTime.Now),
                 TaxaJuros = 0.0179M,
                 ValorMediaPrestacoes = 111.64M,
-                TipoSimulacao = "PRICE"
+                TipoSimulacao = 1
             };
 
-            Simulacao simulacao2SAC = new Simulacao()
+            Simulacao simulacaoPRICE2 = new Simulacao()
             {
                 IdSimulacao = 2,
-                ValorDesejado = 20000,
-                Prazo = 48,
-                ValorTotalParcelas = 27840,
-                CodigoProduto = 2,
-                DescricaoProduto = "Produto 2",
+                ValorDesejado = 1200,
+                Prazo = 12,
+                ValorTotalParcelas = 1344.12M,
+                CodigoProduto = 1,
+                DescricaoProduto = "Produto 1",
                 DataReferencia = DateOnly.FromDateTime(DateTime.Now),
-                TaxaJuros = 0.0160M,
-                ValorMediaPrestacoes = 580,
-                TipoSimulacao = "SAC"
+                TaxaJuros = 0.0179M,
+                ValorMediaPrestacoes = 112.01M,
+                TipoSimulacao = 2
             };
 
-            Simulacao simulacao2PRICE = new Simulacao()
-            {
-                IdSimulacao = 2,
-                ValorDesejado = 20000,
-                Prazo = 48,
-                ValorTotalParcelas = 27840,
-                CodigoProduto = 2,
-                DescricaoProduto = "Produto 2",
-                DataReferencia = DateOnly.FromDateTime(DateTime.Now),
-                TaxaJuros = 0.0160M,
-                ValorMediaPrestacoes = 580,
-                TipoSimulacao = "PRICE"
-            };
 
-            _simulacaoContext.Add(simulacao1SAC);
-            _simulacaoContext.Add(simulacao1PRICE);
-            _simulacaoContext.Add(simulacao2SAC);
-            _simulacaoContext.Add(simulacao2PRICE);
+            _simulacaoContext.Add(simulacaoSAC1);
+            _simulacaoContext.Add(simulacaoPRICE1);
+            _simulacaoContext.Add(simulacaoSAC2);
+            _simulacaoContext.Add(simulacaoPRICE2);
             _simulacaoContext.SaveChanges();
 
             DateOnly dataReferencia = DateOnly.FromDateTime(DateTime.Now);

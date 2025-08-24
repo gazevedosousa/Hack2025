@@ -25,6 +25,7 @@ API_Simulacao_Hack/
 │  Dockerfile
 ├─ Controllers/
 ├─ DTO/
+├─ Enum/
 ├─ Interfaces/
 ├─ Middleware/
 ├─ Migration/
@@ -39,6 +40,7 @@ API_Simulacao_Hack/
 
 * **Controllers/**: Contém os endpoints da API.
 * **DTO/**: Data Transfer Objects usados para requisições e respostas.
+* **Enum/**: Contém o Enum para o Tipo de Simulação (SAC ou PRICE)
 * **Interfaces/**: Contém os Interfaces da API.
 * **Middleware/**: Contém o Middleware da telemetria da API.
 * **Migrations/**: Contém as Migrations do Contexto de Simulação(SimulacaoContext) para criação do arquivo SQLite.
@@ -141,6 +143,20 @@ docker build -t api_simulacao_hack .
 docker run -d -p 8080:8080 --name api_simulacao_hack_container api_simulacao_hack
 ```
 
+## 5. Observações sobre as rotas de listagem
+
+### Rota `listaSimulacoes`
+- O parâmetro `valorTotalParcelas` é calculado por padrão com base na **simulação SAC**. 
+- Para obter o valor baseado na simulação **PRICE**, defina o parâmetro `listaPrice` como **`true`**
+
+### Rota `listaSimulacoesPorProdutoEDia`
+- Os parâmetros `valorTotalCredito` e `valorMedioPrestacao` são calculados por padrão com base na **simulação SAC**. 
+- Para obter os valores baseados na simulação **PRICE**, defina o parâmetro `listaPrice` como **`true`**
+
+> **Observação importante:** Sempre verifique qual tipo de simulação está sendo considerado (`SAC` ou `PRICE`) antes de interpretar os valores retornados, pois isso influencia diretamente nos cálculos financeiros apresentados.
+
+
+
 ## 5. Observações importantes
 
 * Certifique-se de que **nenhum outro serviço está usando a porta 8080** no host.
@@ -148,8 +164,7 @@ docker run -d -p 8080:8080 --name api_simulacao_hack_container api_simulacao_hac
 * Para alterações em `appsettings.json`, é necessário reconstruir a imagem se estiver usando Docker.
 * Testes unitários estão cobrindo acima de 80% do código da aplicação, excluindo as partes não necessárias para os testes.
 * Use `docker ps` para verificar se o container está ativo e mapeando corretamente a porta.
-* Na listagem apresentada na rota `listaSimulacoes` o parâmetro `valorTotalParcelas` é baseado na simulação SAC
-* Na listagem apresentada na rota `listaSimulacoesPorProdutoEDia` o parâmetro `valorTotalCredito` é baseado na simulação SAC
+
 
 
 ## 6. Resumo dos Comandos Principais

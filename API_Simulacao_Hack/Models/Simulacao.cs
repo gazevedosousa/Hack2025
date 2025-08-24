@@ -12,5 +12,5 @@ public partial class Simulacao
     public DateOnly DataReferencia { get; set; }
     public decimal TaxaJuros { get; set; }
     public decimal ValorMediaPrestacoes { get; set; }
-    public string TipoSimulacao { get; set; } = string.Empty;
+    public int TipoSimulacao { get; set; }
 }

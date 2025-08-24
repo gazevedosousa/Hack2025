@@ -61,7 +61,7 @@ namespace API_Simulacao_Hack.Models
                     .HasColumnName("valorMediaPrestacoes");
                 entity.Property(e => e.TipoSimulacao)
                     .IsRequired()
-                    .HasColumnType("varchar(5)")
+                    .HasColumnType("int")
                     .HasColumnName("tipoSimulacao");
             });
         }

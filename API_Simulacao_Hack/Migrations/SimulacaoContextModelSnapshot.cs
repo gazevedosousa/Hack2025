@@ -49,9 +49,8 @@ namespace API_Simulacao_Hack.Migrations
                         .HasColumnType("decimal(10,9)")
                         .HasColumnName("taxaJuros");
 
-                    b.Property<string>("TipoSimulacao")
-                        .IsRequired()
-                        .HasColumnType("varchar(5)")
+                    b.Property<int>("TipoSimulacao")
+                        .HasColumnType("int")
                         .HasColumnName("tipoSimulacao");
 
                     b.Property<decimal>("ValorDesejado")

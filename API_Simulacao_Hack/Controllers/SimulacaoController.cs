@@ -58,11 +58,11 @@ namespace API_Simulacao_Hack.Controllers
         [SwaggerResponse(200, "Retorna lista de simulações paginada")]
         [SwaggerResponse(400, "Erro na requisição.")]
         [SwaggerResponse(500, "Erro interno do servidor.")]
-        public async Task<IActionResult> ListaSimulacoes(int pagina, int qtdRegistrosPagina, TipoSimulacaoEnum? tipoSimulacao, CancellationToken cancellationToken)
+        public async Task<IActionResult> ListaSimulacoes(int pagina, int qtdRegistrosPagina, CancellationToken cancellationToken, bool listaPrice = false)
         {
             try
             {
-                var lsSimulacao = await _simulacaoService.ListaSimulacoes(pagina, qtdRegistrosPagina, tipoSimulacao.ToString());
+                var lsSimulacao = await _simulacaoService.ListaSimulacoes(pagina, qtdRegistrosPagina, listaPrice);
 
                 if (lsSimulacao.StatusCode != StatusCodes.Status200OK)
                 {
@@ -87,11 +87,11 @@ namespace API_Simulacao_Hack.Controllers
         [SwaggerResponse(200, "Retorna lista de simulações por produto e dia")]
         [SwaggerResponse(400, "Erro na requisição.")]
         [SwaggerResponse(500, "Erro interno do servidor.")]
-        public async Task<IActionResult> ListaSimulacoesPorProdutoEDia(DateOnly dataReferencia, TipoSimulacaoEnum? tipoSimulacao, CancellationToken cancellationToken)
+        public async Task<IActionResult> ListaSimulacoesPorProdutoEDia(DateOnly dataReferencia, CancellationToken cancellationToken, bool listaPrice = false)
         {
             try
             {
-                var lsSimulacao = await _simulacaoService.ListaSimulacoesPorProdutoEDia(dataReferencia, tipoSimulacao.ToString());
+                var lsSimulacao = await _simulacaoService.ListaSimulacoesPorProdutoEDia(dataReferencia, listaPrice);
 
                 if (lsSimulacao.StatusCode != StatusCodes.Status200OK)
                 {

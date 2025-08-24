@@ -231,16 +231,16 @@ namespace API_Simulacao_Hack.Test.Services
                     IdSimulacao = 1,
                     ValorDesejado = 1000,
                     Prazo = 12,
-                    ValorTotalParcelas = 1200,
-                    TipoSimulacao = "SAC"
+                    ValorTotalParcelas = 1339.62M,
+                    TipoSimulacao = 1
                 },
                 new Simulacao
                 {
                     IdSimulacao = 2,
-                    ValorDesejado = 20000,
+                    ValorDesejado = 25000,
                     Prazo = 48,
-                    ValorTotalParcelas = 27840,
-                    TipoSimulacao = "SAC"
+                    ValorTotalParcelas = 35718.76M,
+                    TipoSimulacao = 2
                 },
             };
 
@@ -267,14 +267,14 @@ namespace API_Simulacao_Hack.Test.Services
                     ValorTotalParcelas = s.ValorTotalParcelas
                 }).ToList();
 
-            string tipoSimulacao = "SAC";
+            int tipoSimulacao = 1;
 
             _simulacaoRepositoryMock
                 .Setup(repo => repo.ListaSimulacoesPaginadas(dbSetMock.Object, pagina, qtdRegistrosPagina, tipoSimulacao))
                 .ReturnsAsync(lsRetornoDTO);
 
             // Act
-            var result = await _simulacaoService.ListaSimulacoes(pagina, qtdRegistrosPagina, tipoSimulacao);
+            var result = await _simulacaoService.ListaSimulacoes(pagina, qtdRegistrosPagina, false);
 
             // Assert
             Assert.NotEmpty(result.Data!.registros);
@@ -289,65 +289,76 @@ namespace API_Simulacao_Hack.Test.Services
         {
             DateOnly dataReferencia = DateOnly.FromDateTime(DateTime.Now);
 
+
+
             var lsSimulacoes = new List<Simulacao>
             {
                 new Simulacao
                 {
                     IdSimulacao = 1,
-                    ValorDesejado = 1000,
+                    ValorDesejado = 1200,
                     Prazo = 12,
-                    ValorTotalParcelas = 1200,
+                    ValorTotalParcelas = 1339.62M,
                     CodigoProduto = 1,
                     DescricaoProduto = "Produto 1",
                     DataReferencia = dataReferencia,
-                    TaxaJuros = 0.0179M
+                    TaxaJuros = 0.0179M,
+                    ValorMediaPrestacoes = 111.64M,
+                    TipoSimulacao = 1,
+                },
+                new Simulacao
+                {
+                    IdSimulacao = 1,
+                    ValorDesejado = 1200,
+                    Prazo = 12,
+                    ValorTotalParcelas = 1344.12M,
+                    CodigoProduto = 1,
+                    DescricaoProduto = "Produto 1",
+                    DataReferencia = dataReferencia,
+                    TaxaJuros = 0.0179M,
+                    ValorMediaPrestacoes = 112.01M,
+                    TipoSimulacao = 2,
                 },
                 new Simulacao
                 {
                     IdSimulacao = 2,
-                    ValorDesejado = 2000,
-                    Prazo = 12,
-                    ValorTotalParcelas = 2400,
-                    CodigoProduto = 1,
-                    DescricaoProduto = "Produto 1",
-                    DataReferencia = dataReferencia,
-                    TaxaJuros = 0.0179M
-                },
-                new Simulacao
-                {
-                    IdSimulacao = 3,
-                    ValorDesejado = 8500,
-                    Prazo = 24,
-                    ValorTotalParcelas = 10000,
+                    ValorDesejado = 25000,
+                    Prazo = 48,
+                    ValorTotalParcelas = 35718.76M,
                     CodigoProduto = 2,
                     DescricaoProduto = "Produto 2",
                     DataReferencia = dataReferencia,
-                    TaxaJuros = 0.0160M
+                    TaxaJuros = 0.0175M,
+                    ValorMediaPrestacoes = 744.14M,
+                    TipoSimulacao = 1,
                 },
                 new Simulacao
                 {
-                    IdSimulacao = 4,
-                    ValorDesejado = 10500,
-                    Prazo = 12,
-                    ValorTotalParcelas = 15000,
+                    IdSimulacao = 2,
+                    ValorDesejado = 25000,
+                    Prazo = 48,
+                    ValorTotalParcelas = 37158.72M,
                     CodigoProduto = 2,
                     DescricaoProduto = "Produto 2",
                     DataReferencia = dataReferencia,
-                    TaxaJuros = 0.0160M
+                    TaxaJuros = 0.0175M,
+                    ValorMediaPrestacoes = 774.14M,
+                    TipoSimulacao = 1,
                 },
             };
 
-            string tipoSimulacao = "SAC";
+            int tipoSimulacao = 1;
 
             _simulacaoRepositoryMock
                 .Setup(repo => repo.ListaSimulacoesPorDia(dataReferencia, tipoSimulacao))
                 .ReturnsAsync(lsSimulacoes.ToList());
 
             // Act
-            var result = await _simulacaoService.ListaSimulacoesPorProdutoEDia(dataReferencia, tipoSimulacao);
+            var result = await _simulacaoService.ListaSimulacoesPorProdutoEDia(dataReferencia, false);
 
             // Assert
             Assert.NotEmpty(result.Data!.Simulacoes);
+            Assert.Equal(2, result.Data.Simulacoes.Count);
         }
 
         [Fact]
@@ -355,10 +366,8 @@ namespace API_Simulacao_Hack.Test.Services
         {
             DateOnly dataReferencia = default;
 
-            string tipoSimulacao = "SAC";
-
             // Act
-            var result = await _simulacaoService.ListaSimulacoesPorProdutoEDia(dataReferencia, tipoSimulacao);
+            var result = await _simulacaoService.ListaSimulacoesPorProdutoEDia(dataReferencia, false);
 
             // Assert
             Assert.Equal("Informe a data de referência.", result.ErrorMessage);

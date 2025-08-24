@@ -37,7 +37,7 @@ namespace API_Simulacao_Hack.Repositories
             return _simulacaoContext.Simulacoes;
         }
 
-        public async Task<List<RetornoListaSimulacaoDTO>> ListaSimulacoesPaginadas(DbSet<Simulacao> query, int pagina, int qtdRegistrosPagina, string tipoSimulacao)
+        public async Task<List<RetornoListaSimulacaoDTO>> ListaSimulacoesPaginadas(DbSet<Simulacao> query, int pagina, int qtdRegistrosPagina, int tipoSimulacao)
         {
             return await query.Skip((pagina - 1) * qtdRegistrosPagina)
                 .Where(s => s.TipoSimulacao == tipoSimulacao)
@@ -52,7 +52,7 @@ namespace API_Simulacao_Hack.Repositories
                 .ToListAsync();
         }
 
-        public async Task<List<Simulacao>> ListaSimulacoesPorDia(DateOnly dataReferencia, string tipoSimulacao)
+        public async Task<List<Simulacao>> ListaSimulacoesPorDia(DateOnly dataReferencia, int tipoSimulacao)
         {
             return await _simulacaoContext.Simulacoes
                 .Where(s => s.TipoSimulacao == tipoSimulacao)

@@ -72,12 +72,6 @@ builder.Services.AddCors(options =>
     );
 });
 
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SchemaFilter<EnumSchemaFilter>();
-});
-
-
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())

@@ -10,7 +10,6 @@ using API_Simulacao_Hack.Validators;
 using API_Simulacao_Hack.Wrappers.Response;
 using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
-using System.Drawing;
 
 namespace API_Simulacao_Hack.Services
 {
@@ -63,11 +62,10 @@ namespace API_Simulacao_Hack.Services
 
             foreach(ResultadoSimulacaoDTO resultadoSimulacao in lsResultadoSimulacao)
             {
-                decimal valorMediaPrestacoes = lsResultadoSimulacao
-                    .SelectMany(r => r.Parcelas)
-                    .Average(pr => pr.ValorPrestacao);
+                decimal valorMediaPrestacoes = resultadoSimulacao.Parcelas.Any()
+                    ? Math.Round(resultadoSimulacao.Parcelas.Average(p => p.ValorPrestacao), 2)
+                    : 0;
 
-                // Salvar simulação no banco de dados
                 Simulacao simulacao = new Simulacao
                 {
                     IdSimulacao = retornoSimulacao.IdSimulacao,
@@ -79,7 +77,7 @@ namespace API_Simulacao_Hack.Services
                     DataReferencia = DateOnly.FromDateTime(new DateTime().GetDataAtual().Date),
                     TaxaJuros = retornoSimulacao.TaxaJuros,
                     ValorMediaPrestacoes = valorMediaPrestacoes,
-                    TipoSimulacao = resultadoSimulacao.Tipo
+                    TipoSimulacao = (int)System.Enum.Parse<TipoSimulacaoEnum>(resultadoSimulacao.Tipo, true)
                 };
 
                 if (!await _simulacaoRepository.SalvarSimulacao(simulacao))
@@ -98,10 +96,14 @@ namespace API_Simulacao_Hack.Services
             return ApiResponse<RetornoSimulacaoDTO>.SuccessOK(retornoSimulacao);
         }
 
-        public async Task<ApiResponse<ResponsePaged<RetornoListaSimulacaoDTO>>> ListaSimulacoes(int pagina, int qtdRegistrosPagina, string? tipoSimulacao)
+        public async Task<ApiResponse<ResponsePaged<RetornoListaSimulacaoDTO>>> ListaSimulacoes(int pagina, int qtdRegistrosPagina, bool listaPrice)
         {
-            if (tipoSimulacao == null || (tipoSimulacao != "SAC" && tipoSimulacao != "PRICE"))
-                tipoSimulacao = "SAC";
+            int tipoSimulacao = (int)TipoSimulacaoEnum.SAC;
+
+            if (listaPrice)
+            {
+                tipoSimulacao = (int)TipoSimulacaoEnum.PRICE;
+            }
 
             pagina = pagina == 0 ? 1 : pagina;
             qtdRegistrosPagina = qtdRegistrosPagina == 0 ? 1 : qtdRegistrosPagina;
@@ -117,10 +119,14 @@ namespace API_Simulacao_Hack.Services
             return ApiResponse<ResponsePaged<RetornoListaSimulacaoDTO>>.SuccessOK(responsePaged);
         }
 
-        public async Task<ApiResponse<RetornoListaProdutoDiaDTO>> ListaSimulacoesPorProdutoEDia(DateOnly dataReferencia, string? tipoSimulacao)
+        public async Task<ApiResponse<RetornoListaProdutoDiaDTO>> ListaSimulacoesPorProdutoEDia(DateOnly dataReferencia, bool listaPrice)
         {
-            if (tipoSimulacao == null || (tipoSimulacao != "SAC" && tipoSimulacao != "PRICE"))
-                tipoSimulacao = "SAC";
+            int tipoSimulacao = (int)TipoSimulacaoEnum.SAC;
+
+            if (listaPrice)
+            {
+                tipoSimulacao = (int)TipoSimulacaoEnum.PRICE;
+            }
 
             RetornoListaProdutoDiaDTO retornoListaProdutoDia = new RetornoListaProdutoDiaDTO();
 
