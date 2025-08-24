@@ -60,6 +60,7 @@ namespace API_Simulacao_Hack.Repositories
         {
             return await _simulacaoContext.Simulacoes
                 .Where(s => s.TipoSimulacao == tipoSimulacao && s.DataReferencia == dataReferencia)
+                .OrderBy(s => s.CodigoProduto)
                 .AsNoTracking()
                 .ToListAsync();
         }
