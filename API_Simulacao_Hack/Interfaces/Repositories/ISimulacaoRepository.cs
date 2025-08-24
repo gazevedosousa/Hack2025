@@ -8,8 +8,8 @@ namespace API_Simulacao_Hack.Interfaces.Repositories
     {
         Task<Produto?> BuscaProduto(SolicitacaoSimulacaoDTO simulacaoDTO);
         Task<bool> SalvarSimulacao(Simulacao simulacao);
-        DbSet<Simulacao> MontaConsultaTotal();
-        Task<List<RetornoListaSimulacaoDTO>> ListaSimulacoesPaginadas(DbSet<Simulacao> query, int pagina, int qtdRegistrosPagina, int tipoSimulacao);
+        Task<long> BuscaQtdRegistros(int tipoSimulacao);
+        Task<List<RetornoListaSimulacaoDTO>> ListaSimulacoesPaginadas(int pagina, int qtdRegistrosPagina, int tipoSimulacao);
         Task<List<Simulacao>> ListaSimulacoesPorDia(DateOnly dataReferencia, int tipoSimulacao);
         Task<int> ContaSimulacoesPorData(DateOnly dataReferencia);
     }

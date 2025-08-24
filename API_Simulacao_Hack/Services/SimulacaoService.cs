@@ -108,11 +108,9 @@ namespace API_Simulacao_Hack.Services
             pagina = pagina == 0 ? 1 : pagina;
             qtdRegistrosPagina = qtdRegistrosPagina == 0 ? 1 : qtdRegistrosPagina;
 
-            DbSet<Simulacao> query = _simulacaoRepository.MontaConsultaTotal();
+            long qtdRegistrosTotal = await _simulacaoRepository.BuscaQtdRegistros(tipoSimulacao);
 
-            long qtdRegistrosTotal = query.Count();
-
-            List<RetornoListaSimulacaoDTO> lsSimulacoes = await _simulacaoRepository.ListaSimulacoesPaginadas(query, pagina, qtdRegistrosPagina, tipoSimulacao);
+            List<RetornoListaSimulacaoDTO> lsSimulacoes = await _simulacaoRepository.ListaSimulacoesPaginadas(pagina, qtdRegistrosPagina, tipoSimulacao);
 
             ResponsePaged<RetornoListaSimulacaoDTO> responsePaged = new ResponsePaged<RetornoListaSimulacaoDTO>(lsSimulacoes, pagina, lsSimulacoes.Count(), qtdRegistrosTotal);
 

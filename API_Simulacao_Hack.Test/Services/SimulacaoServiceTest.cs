@@ -244,18 +244,9 @@ namespace API_Simulacao_Hack.Test.Services
                 },
             };
 
-
-            var queryableSimulacoes = lsSimulacoes.AsQueryable();
-
-            var dbSetMock = new Mock<DbSet<Simulacao>>();
-            dbSetMock.As<IQueryable<Simulacao>>().Setup(m => m.Provider).Returns(queryableSimulacoes.Provider);
-            dbSetMock.As<IQueryable<Simulacao>>().Setup(m => m.Expression).Returns(queryableSimulacoes.Expression);
-            dbSetMock.As<IQueryable<Simulacao>>().Setup(m => m.ElementType).Returns(queryableSimulacoes.ElementType);
-            dbSetMock.As<IQueryable<Simulacao>>().Setup(m => m.GetEnumerator()).Returns(queryableSimulacoes.GetEnumerator());
-
             _simulacaoRepositoryMock
-                .Setup(repo => repo.MontaConsultaTotal())
-                .Returns(dbSetMock.Object);
+                .Setup(repo => repo.BuscaQtdRegistros(1))
+                .ReturnsAsync(2);
 
             var lsRetornoDTO = lsSimulacoes
                 .Take(qtdRegistrosPagina)
@@ -270,7 +261,7 @@ namespace API_Simulacao_Hack.Test.Services
             int tipoSimulacao = 1;
 
             _simulacaoRepositoryMock
-                .Setup(repo => repo.ListaSimulacoesPaginadas(dbSetMock.Object, pagina, qtdRegistrosPagina, tipoSimulacao))
+                .Setup(repo => repo.ListaSimulacoesPaginadas(pagina, qtdRegistrosPagina, tipoSimulacao))
                 .ReturnsAsync(lsRetornoDTO);
 
             // Act

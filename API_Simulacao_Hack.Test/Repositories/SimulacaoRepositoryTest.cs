@@ -145,7 +145,7 @@ namespace API_Simulacao_Hack.Test.Repositories
         }
 
         [Fact]
-        public void MontaConsulta_Sucesso()
+        public async Task BuscaQtdRegistros_Sucesso()
         {
 
             using var dbHackInMemory = SimulacaoRepositoryFixture.GetInMemoryContextDbHackContext();
@@ -174,16 +174,14 @@ namespace API_Simulacao_Hack.Test.Repositories
             _simulacaoContext.SaveChanges();
 
             // Act
-            var result = simulacaoRepository.MontaConsultaTotal();
+            long result = await simulacaoRepository.BuscaQtdRegistros(1);
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Single(result.ToList());
-            Assert.Equal(1200, result.First().ValorDesejado);
+            Assert.Equal(1L, result);
         }
 
         [Fact]
-        public void MontaConsultaTotal_Vazia()
+        public async Task BuscaQtdRegistros_Vazia()
         {
             using var dbHackInMemory = SimulacaoRepositoryFixture.GetInMemoryContextDbHackContext();
             using var dbSimulacaoContextInMemory = SimulacaoRepositoryFixture.GetInMemoryContextSimulacaoContext();
@@ -194,11 +192,10 @@ namespace API_Simulacao_Hack.Test.Repositories
             SimulacaoRepository simulacaoRepository = new SimulacaoRepository(_dbHack, _simulacaoContext);
 
             // Act
-            var result = simulacaoRepository.MontaConsultaTotal();
+            long result = await simulacaoRepository.BuscaQtdRegistros(1);
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Empty(result);
+            Assert.Equal(0L, result);
         }
 
         [Fact]
@@ -220,7 +217,7 @@ namespace API_Simulacao_Hack.Test.Repositories
             int tipoSimulacao = 1;
 
             // Act
-            var result = await simulacaoRepository.ListaSimulacoesPaginadas(dbSet, pagina, qtdRegistrosPagina, tipoSimulacao);
+            var result = await simulacaoRepository.ListaSimulacoesPaginadas(pagina, qtdRegistrosPagina, tipoSimulacao);
 
             // Assert
             Assert.NotNull(result);
@@ -271,15 +268,13 @@ namespace API_Simulacao_Hack.Test.Repositories
             _simulacaoContext.Add(simulacaoPRICE);
             _simulacaoContext.SaveChanges();
 
-            DbSet<Simulacao> dbSet = _simulacaoContext.Simulacoes;
-
             int pagina = 1;
             int qtdRegistrosPagina = 1;
 
             int tipoSimulacao = 1;
 
             // Act
-            var result = await simulacaoRepository.ListaSimulacoesPaginadas(dbSet, pagina, qtdRegistrosPagina, tipoSimulacao);
+            var result = await simulacaoRepository.ListaSimulacoesPaginadas(pagina, qtdRegistrosPagina, tipoSimulacao);
 
             // Assert
             Assert.NotNull(result);
@@ -332,14 +327,12 @@ namespace API_Simulacao_Hack.Test.Repositories
             _simulacaoContext.Add(simulacaoSAC2);
             _simulacaoContext.SaveChanges();
 
-            DbSet<Simulacao> dbSet = _simulacaoContext.Simulacoes;
-
             int pagina = 1;
             int qtdRegistrosPagina = 2;
             int tipoSimulacao = 1;
 
             // Act
-            var result = await simulacaoRepository.ListaSimulacoesPaginadas(dbSet, pagina, qtdRegistrosPagina, tipoSimulacao);
+            var result = await simulacaoRepository.ListaSimulacoesPaginadas(pagina, qtdRegistrosPagina, tipoSimulacao);
 
             // Assert
             Assert.NotNull(result);
