@@ -1,3 +1,4 @@
+using API_Simulacao_Hack.Enum;
 using API_Simulacao_Hack.Interfaces.Repositories;
 using API_Simulacao_Hack.Interfaces.Services;
 using API_Simulacao_Hack.Middleware;
@@ -70,7 +71,6 @@ builder.Services.AddCors(options =>
         .AllowAnyHeader()
     );
 });
-
 
 var app = builder.Build();
 

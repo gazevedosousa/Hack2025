@@ -2,6 +2,8 @@
 using API_Simulacao_Hack.Interfaces.Repositories;
 using API_Simulacao_Hack.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace API_Simulacao_Hack.Repositories
 {
@@ -32,14 +34,17 @@ namespace API_Simulacao_Hack.Repositories
             return retornoBanco == 1;
         }
 
-        public DbSet<Simulacao> MontaConsultaTotal()
+        public async Task<long> BuscaQtdRegistros(int tipoSimulacao)
         {
-            return _simulacaoContext.Simulacoes;
+            return await _simulacaoContext.Simulacoes
+                .Where(s => s.TipoSimulacao == tipoSimulacao)
+                .CountAsync();
         }
 
-        public async Task<List<RetornoListaSimulacaoDTO>> ListaSimulacoesPaginadas(DbSet<Simulacao> query, int pagina, int qtdRegistrosPagina)
+        public async Task<List<RetornoListaSimulacaoDTO>> ListaSimulacoesPaginadas(int pagina, int qtdRegistrosPagina, int tipoSimulacao)
         {
-            return await query.Skip((pagina - 1) * qtdRegistrosPagina)
+            return await _simulacaoContext.Simulacoes.Where(s => s.TipoSimulacao == tipoSimulacao)
+                .Skip((pagina - 1) * qtdRegistrosPagina)
                 .Take(qtdRegistrosPagina).AsNoTracking()
                 .Select(s => new RetornoListaSimulacaoDTO
                 {
@@ -51,18 +56,20 @@ namespace API_Simulacao_Hack.Repositories
                 .ToListAsync();
         }
 
-        public async Task<List<Simulacao>> ListaSimulacoesPorDia(DateOnly dataReferencia)
+        public async Task<List<Simulacao>> ListaSimulacoesPorDia(DateOnly dataReferencia, int tipoSimulacao)
         {
             return await _simulacaoContext.Simulacoes
-                .Where(s => s.DataReferencia == dataReferencia)
+                .Where(s => s.TipoSimulacao == tipoSimulacao && s.DataReferencia == dataReferencia)
                 .AsNoTracking()
                 .ToListAsync();
         }
 
         public async Task<int> ContaSimulacoesPorData(DateOnly dataReferencia)
         {
-            return await _simulacaoContext.Simulacoes
+            int totalSimulacoes = await _simulacaoContext.Simulacoes
                 .CountAsync(s => s.DataReferencia == dataReferencia);
+
+            return totalSimulacoes / 2;
 
         }
 

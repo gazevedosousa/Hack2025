@@ -12,7 +12,6 @@ namespace API_Simulacao_Hack.Test.Repositories
     {
         public static SimulacaoContext GetInMemoryContextSimulacaoContext()
         {
-            // Garante que cada teste tenha seu banco isolado (se quiser pode passar nome fixo)
             var options = new DbContextOptionsBuilder<SimulacaoContext>()
                 .UseInMemoryDatabase("SimulacaoTestContext")
                 .EnableServiceProviderCaching(false)
@@ -20,7 +19,6 @@ namespace API_Simulacao_Hack.Test.Repositories
 
             var context = new SimulacaoContext(options);
 
-            // Se quiser, já garante que o banco é criado
             context.Database.EnsureCreated();
 
             return context;
@@ -28,14 +26,12 @@ namespace API_Simulacao_Hack.Test.Repositories
 
         public static DbHack GetInMemoryContextDbHackContext()
         {
-            // Garante que cada teste tenha seu banco isolado (se quiser pode passar nome fixo)
             var options = new DbContextOptionsBuilder<DbHack>()
                 .UseInMemoryDatabase("DbHackTestContext")
                 .Options;
 
             var context = new DbHack(options);
 
-            // Se quiser, já garante que o banco é criado
             context.Database.EnsureCreated();
 
             return context;

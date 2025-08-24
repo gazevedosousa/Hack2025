@@ -19,7 +19,12 @@ namespace API_Simulacao_Hack.Models
         {
             modelBuilder.Entity<Simulacao>(entity =>
             {
-                entity.HasKey(e => e.IdSimulacao);
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                    .IsRequired()
+                    .HasColumnType("integer")
+                    .HasColumnName("id")
+                    .ValueGeneratedOnAdd();
                 entity.Property(e => e.IdSimulacao)
                     .IsRequired()
                     .HasColumnType("integer")
@@ -54,6 +59,10 @@ namespace API_Simulacao_Hack.Models
                     .IsRequired()
                     .HasColumnType("decimal(18,2)")
                     .HasColumnName("valorMediaPrestacoes");
+                entity.Property(e => e.TipoSimulacao)
+                    .IsRequired()
+                    .HasColumnType("int")
+                    .HasColumnName("tipoSimulacao");
             });
         }
     }

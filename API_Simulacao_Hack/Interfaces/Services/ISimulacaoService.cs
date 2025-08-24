@@ -7,8 +7,8 @@ namespace API_Simulacao_Hack.Interfaces.Services
     public interface ISimulacaoService
     {
         Task<ApiResponse<RetornoSimulacaoDTO>> RealizaSimulacao(SolicitacaoSimulacaoDTO simulacaoDTO);
-        Task<ApiResponse<ResponsePaged<RetornoListaSimulacaoDTO>>> ListaSimulacoes(int pagina, int qtdRegistrosPagina);
-        Task<ApiResponse<RetornoListaProdutoDiaDTO>> ListaSimulacoesPorProdutoEDia(DateOnly dataReferencia);
+        Task<ApiResponse<ResponsePaged<RetornoListaSimulacaoDTO>>> ListaSimulacoes(int pagina, int qtdRegistrosPagina, bool listaPrice);
+        Task<ApiResponse<RetornoListaProdutoDiaDTO>> ListaSimulacoesPorProdutoEDia(DateOnly dataReferencia, bool listaPrice);
         Task<int> GeraIdSimulacao();
     }
 }
