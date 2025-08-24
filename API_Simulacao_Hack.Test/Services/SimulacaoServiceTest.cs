@@ -231,14 +231,16 @@ namespace API_Simulacao_Hack.Test.Services
                     IdSimulacao = 1,
                     ValorDesejado = 1000,
                     Prazo = 12,
-                    ValorTotalParcelas = 1200
+                    ValorTotalParcelas = 1200,
+                    TipoSimulacao = "SAC"
                 },
                 new Simulacao
                 {
                     IdSimulacao = 2,
                     ValorDesejado = 20000,
                     Prazo = 48,
-                    ValorTotalParcelas = 27840
+                    ValorTotalParcelas = 27840,
+                    TipoSimulacao = "SAC"
                 },
             };
 
@@ -255,7 +257,6 @@ namespace API_Simulacao_Hack.Test.Services
                 .Setup(repo => repo.MontaConsultaTotal())
                 .Returns(dbSetMock.Object);
 
-            // Simule o mapeamento para DTOs
             var lsRetornoDTO = lsSimulacoes
                 .Take(qtdRegistrosPagina)
                 .Select(s => new RetornoListaSimulacaoDTO
@@ -266,12 +267,14 @@ namespace API_Simulacao_Hack.Test.Services
                     ValorTotalParcelas = s.ValorTotalParcelas
                 }).ToList();
 
+            string tipoSimulacao = "SAC";
+
             _simulacaoRepositoryMock
-                .Setup(repo => repo.ListaSimulacoesPaginadas(dbSetMock.Object, pagina, qtdRegistrosPagina))
+                .Setup(repo => repo.ListaSimulacoesPaginadas(dbSetMock.Object, pagina, qtdRegistrosPagina, tipoSimulacao))
                 .ReturnsAsync(lsRetornoDTO);
 
             // Act
-            var result = await _simulacaoService.ListaSimulacoes(pagina, qtdRegistrosPagina);
+            var result = await _simulacaoService.ListaSimulacoes(pagina, qtdRegistrosPagina, tipoSimulacao);
 
             // Assert
             Assert.NotEmpty(result.Data!.registros);
@@ -334,12 +337,14 @@ namespace API_Simulacao_Hack.Test.Services
                 },
             };
 
+            string tipoSimulacao = "SAC";
+
             _simulacaoRepositoryMock
-                .Setup(repo => repo.ListaSimulacoesPorDia(dataReferencia))
+                .Setup(repo => repo.ListaSimulacoesPorDia(dataReferencia, tipoSimulacao))
                 .ReturnsAsync(lsSimulacoes.ToList());
 
             // Act
-            var result = await _simulacaoService.ListaSimulacoesPorProdutoEDia(dataReferencia);
+            var result = await _simulacaoService.ListaSimulacoesPorProdutoEDia(dataReferencia, tipoSimulacao);
 
             // Assert
             Assert.NotEmpty(result.Data!.Simulacoes);
@@ -350,8 +355,10 @@ namespace API_Simulacao_Hack.Test.Services
         {
             DateOnly dataReferencia = default;
 
+            string tipoSimulacao = "SAC";
+
             // Act
-            var result = await _simulacaoService.ListaSimulacoesPorProdutoEDia(dataReferencia);
+            var result = await _simulacaoService.ListaSimulacoesPorProdutoEDia(dataReferencia, tipoSimulacao);
 
             // Assert
             Assert.Equal("Informe a data de referência.", result.ErrorMessage);

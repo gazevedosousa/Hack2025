@@ -1,14 +1,16 @@
 ﻿using API_Simulacao_Hack.DTO;
 using API_Simulacao_Hack.DTO.EventHub;
+using API_Simulacao_Hack.Enum;
+using API_Simulacao_Hack.Interfaces.Repositories;
+using API_Simulacao_Hack.Interfaces.Services;
 using API_Simulacao_Hack.Models;
 using API_Simulacao_Hack.Util;
 using API_Simulacao_Hack.Util.Base;
-using Microsoft.EntityFrameworkCore;
-using API_Simulacao_Hack.Interfaces.Services;
-using API_Simulacao_Hack.Interfaces.Repositories;
-using API_Simulacao_Hack.Wrappers.Response;
 using API_Simulacao_Hack.Validators;
+using API_Simulacao_Hack.Wrappers.Response;
 using FluentValidation.Results;
+using Microsoft.EntityFrameworkCore;
+using System.Drawing;
 
 namespace API_Simulacao_Hack.Services
 {
@@ -58,29 +60,33 @@ namespace API_Simulacao_Hack.Services
             retornoSimulacao.DescricaoProduto = produto.NoProduto;
             retornoSimulacao.TaxaJuros = produto.PcTaxaJuros;
             retornoSimulacao.ResultadosSimulacao = lsResultadoSimulacao;
-           
-            decimal valorMediaPrestacoes = lsResultadoSimulacao
-                .SelectMany(r => r.Parcelas)
-                .Average(pr => pr.ValorPrestacao);
 
-            // Salvar simulação no banco de dados
-            Simulacao simulacao = new Simulacao
+            foreach(ResultadoSimulacaoDTO resultadoSimulacao in lsResultadoSimulacao)
             {
-                IdSimulacao = retornoSimulacao.IdSimulacao,
-                ValorDesejado = simulacaoDTO.ValorDesejado,
-                Prazo = simulacaoDTO.Prazo,
-                ValorTotalParcelas = lsResultadoSimulacao.Where(s => s.Tipo == "SAC").SelectMany(s => s.Parcelas).Sum(p => p.ValorPrestacao),
-                CodigoProduto = retornoSimulacao.CodigoProduto,
-                DescricaoProduto = retornoSimulacao.DescricaoProduto,
-                DataReferencia = DateOnly.FromDateTime(new DateTime().GetDataAtual().Date),
-                TaxaJuros = retornoSimulacao.TaxaJuros,
-                ValorMediaPrestacoes = valorMediaPrestacoes
-            };
+                decimal valorMediaPrestacoes = lsResultadoSimulacao
+                    .SelectMany(r => r.Parcelas)
+                    .Average(pr => pr.ValorPrestacao);
 
-            if (!await _simulacaoRepository.SalvarSimulacao(simulacao))
-            {
-                _logger.LogError("Erro ao salvar simulação no banco de dados");
-                return ApiResponse<RetornoSimulacaoDTO>.BadRequest(retornoSimulacao, "Erro ao salvar simulação no banco de dados");
+                // Salvar simulação no banco de dados
+                Simulacao simulacao = new Simulacao
+                {
+                    IdSimulacao = retornoSimulacao.IdSimulacao,
+                    ValorDesejado = simulacaoDTO.ValorDesejado,
+                    Prazo = simulacaoDTO.Prazo,
+                    ValorTotalParcelas = resultadoSimulacao.Parcelas.Sum(p => p.ValorPrestacao),
+                    CodigoProduto = retornoSimulacao.CodigoProduto,
+                    DescricaoProduto = retornoSimulacao.DescricaoProduto,
+                    DataReferencia = DateOnly.FromDateTime(new DateTime().GetDataAtual().Date),
+                    TaxaJuros = retornoSimulacao.TaxaJuros,
+                    ValorMediaPrestacoes = valorMediaPrestacoes,
+                    TipoSimulacao = resultadoSimulacao.Tipo
+                };
+
+                if (!await _simulacaoRepository.SalvarSimulacao(simulacao))
+                {
+                    _logger.LogError("Erro ao salvar simulação no banco de dados");
+                    return ApiResponse<RetornoSimulacaoDTO>.BadRequest(retornoSimulacao, "Erro ao salvar simulação no banco de dados");
+                }
             }
 
             await _eventHubService.EnviaEvento(new EventHubDTO()
@@ -92,8 +98,11 @@ namespace API_Simulacao_Hack.Services
             return ApiResponse<RetornoSimulacaoDTO>.SuccessOK(retornoSimulacao);
         }
 
-        public async Task<ApiResponse<ResponsePaged<RetornoListaSimulacaoDTO>>> ListaSimulacoes(int pagina, int qtdRegistrosPagina)
+        public async Task<ApiResponse<ResponsePaged<RetornoListaSimulacaoDTO>>> ListaSimulacoes(int pagina, int qtdRegistrosPagina, string? tipoSimulacao)
         {
+            if (tipoSimulacao == null || (tipoSimulacao != "SAC" && tipoSimulacao != "PRICE"))
+                tipoSimulacao = "SAC";
+
             pagina = pagina == 0 ? 1 : pagina;
             qtdRegistrosPagina = qtdRegistrosPagina == 0 ? 1 : qtdRegistrosPagina;
 
@@ -101,15 +110,18 @@ namespace API_Simulacao_Hack.Services
 
             long qtdRegistrosTotal = query.Count();
 
-            List<RetornoListaSimulacaoDTO> lsSimulacoes = await _simulacaoRepository.ListaSimulacoesPaginadas(query, pagina, qtdRegistrosPagina);
+            List<RetornoListaSimulacaoDTO> lsSimulacoes = await _simulacaoRepository.ListaSimulacoesPaginadas(query, pagina, qtdRegistrosPagina, tipoSimulacao);
 
             ResponsePaged<RetornoListaSimulacaoDTO> responsePaged = new ResponsePaged<RetornoListaSimulacaoDTO>(lsSimulacoes, pagina, lsSimulacoes.Count(), qtdRegistrosTotal);
 
             return ApiResponse<ResponsePaged<RetornoListaSimulacaoDTO>>.SuccessOK(responsePaged);
         }
 
-        public async Task<ApiResponse<RetornoListaProdutoDiaDTO>> ListaSimulacoesPorProdutoEDia(DateOnly dataReferencia)
+        public async Task<ApiResponse<RetornoListaProdutoDiaDTO>> ListaSimulacoesPorProdutoEDia(DateOnly dataReferencia, string? tipoSimulacao)
         {
+            if (tipoSimulacao == null || (tipoSimulacao != "SAC" && tipoSimulacao != "PRICE"))
+                tipoSimulacao = "SAC";
+
             RetornoListaProdutoDiaDTO retornoListaProdutoDia = new RetornoListaProdutoDiaDTO();
 
             if(dataReferencia == default)
@@ -120,7 +132,7 @@ namespace API_Simulacao_Hack.Services
 
             retornoListaProdutoDia.DataReferencia = dataReferencia;
 
-            List<Simulacao> lsSimulacoes = await _simulacaoRepository.ListaSimulacoesPorDia(dataReferencia);
+            List<Simulacao> lsSimulacoes = await _simulacaoRepository.ListaSimulacoesPorDia(dataReferencia, tipoSimulacao);
 
             if (lsSimulacoes.Count > 0)
             {

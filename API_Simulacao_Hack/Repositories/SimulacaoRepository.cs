@@ -37,9 +37,10 @@ namespace API_Simulacao_Hack.Repositories
             return _simulacaoContext.Simulacoes;
         }
 
-        public async Task<List<RetornoListaSimulacaoDTO>> ListaSimulacoesPaginadas(DbSet<Simulacao> query, int pagina, int qtdRegistrosPagina)
+        public async Task<List<RetornoListaSimulacaoDTO>> ListaSimulacoesPaginadas(DbSet<Simulacao> query, int pagina, int qtdRegistrosPagina, string tipoSimulacao)
         {
             return await query.Skip((pagina - 1) * qtdRegistrosPagina)
+                .Where(s => s.TipoSimulacao == tipoSimulacao)
                 .Take(qtdRegistrosPagina).AsNoTracking()
                 .Select(s => new RetornoListaSimulacaoDTO
                 {
@@ -51,9 +52,10 @@ namespace API_Simulacao_Hack.Repositories
                 .ToListAsync();
         }
 
-        public async Task<List<Simulacao>> ListaSimulacoesPorDia(DateOnly dataReferencia)
+        public async Task<List<Simulacao>> ListaSimulacoesPorDia(DateOnly dataReferencia, string tipoSimulacao)
         {
             return await _simulacaoContext.Simulacoes
+                .Where(s => s.TipoSimulacao == tipoSimulacao)
                 .Where(s => s.DataReferencia == dataReferencia)
                 .AsNoTracking()
                 .ToListAsync();
@@ -61,8 +63,10 @@ namespace API_Simulacao_Hack.Repositories
 
         public async Task<int> ContaSimulacoesPorData(DateOnly dataReferencia)
         {
-            return await _simulacaoContext.Simulacoes
+            int totalSimulacoes = await _simulacaoContext.Simulacoes
                 .CountAsync(s => s.DataReferencia == dataReferencia);
+
+            return totalSimulacoes / 2;
 
         }
 
