@@ -59,8 +59,7 @@ namespace API_Simulacao_Hack.Repositories
         public async Task<List<Simulacao>> ListaSimulacoesPorDia(DateOnly dataReferencia, int tipoSimulacao)
         {
             return await _simulacaoContext.Simulacoes
-                .Where(s => s.TipoSimulacao == tipoSimulacao)
-                .Where(s => s.DataReferencia == dataReferencia)
+                .Where(s => s.TipoSimulacao == tipoSimulacao && s.DataReferencia == dataReferencia)
                 .AsNoTracking()
                 .ToListAsync();
         }
